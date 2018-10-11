@@ -1,9 +1,22 @@
-void ft_striteri(char *s, void (*f)(unsigned int, char*))
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_striteri.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/05 02:55:17 by jcrisp            #+#    #+#             */
+/*   Updated: 2018/10/08 14:33:55 by jcrisp           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "libft.h"
+
+void	ft_striteri(char *s, void (*f)(unsigned int, char*))
 {
-    int i;
-    
-    i = 0;
-    while(s[i])
-        (*f)(i,s[i++]);
-    
+	unsigned i;
+
+	i = ft_strlen(s);
+	while (i-- > 0)
+		(*f)(i, &s[i]);
 }

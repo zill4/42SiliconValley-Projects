@@ -6,15 +6,15 @@
 /*   By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/10 17:53:41 by jcrisp            #+#    #+#             */
-/*   Updated: 2018/09/13 15:15:42 by jcrisp           ###   ########.fr       */
+/*   Updated: 2018/10/05 02:56:03 by jcrisp           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-size_t	ft_strlen(char *words)
+size_t	ft_strlen(const char *words)
 {
-	size_t i;
+	unsigned int i;
 
 	i = 0;
 	while (words[i])

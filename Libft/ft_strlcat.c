@@ -1,22 +1,42 @@
-size_t ft_strlcat(char * restrict dst, const char * restrict src, size_t dstsize)
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_strlcat.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/05 02:55:44 by jcrisp            #+#    #+#             */
+/*   Updated: 2018/10/08 14:59:18 by jcrisp           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "libft.h"
+
+size_t		ft_strlcat(char *dst, const char *src, size_t size)
 {
-    size_t dst_len;
-    size_t src_len;
-    
-    dst_len = 0;
-    src_len = 0;
-    while(dst[dst_len])
-    dst_len++;
-    while(src[src_len])
-    src_len++;
-    if (dst_len + src_len - 1 > dstsize)
-        return(dst_len + src_len - 1);
-    else
-    {
-        dst_len = 0;
-     while(src[src_len])
-        dst[dst_len++] = src[src_len++];
-    }
-    dst[dst_len] = '\0';
-    return(dst_len + src_len - 1);
+	char			*d;
+	const char		*s;
+	size_t			i;
+	size_t			d_size;
+
+	s = src;
+	d = dst;
+	i = size;
+	while (*d && i--)
+		d++;
+	d_size = d - dst;
+	i = size - d_size;
+	if (!i)
+		return (d_size + ft_strlen(((char *)s)));
+	while (*s)
+	{
+		if (i != 1)
+		{
+			*d++ = *s;
+			i--;
+		}
+		s++;
+	}
+	*d = '\0';
+	return (d_size + (s - src));
 }

@@ -1,10 +1,24 @@
-void *ft_memalloc(size_t size)
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_memalloc.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/05 02:48:45 by jcrisp            #+#    #+#             */
+/*   Updated: 2018/10/08 15:40:45 by jcrisp           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "libft.h"
+
+void	*ft_memalloc(size_t size)
 {
-    void *mem;
+	void *mem;
 
-    if (mem = (void *)memalloc(sizeof(void *)* size + 1))
-        return(mem);
-    else
-        return(NULL);
-
+	mem = (void *)malloc(sizeof(void) * size);
+	if (!mem || !size)
+		return (NULL);
+	ft_bzero(mem, size);
+	return (mem);
 }

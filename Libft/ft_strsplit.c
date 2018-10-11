@@ -1,46 +1,67 @@
-char **ft_strsplit(char const *s, char c)
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_strsplit.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/05 02:59:41 by jcrisp            #+#    #+#             */
+/*   Updated: 2018/10/05 02:59:43 by jcrisp           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "libft.h"
+
+static char	*word_builder(char const *str, char c, unsigned int *index)
 {
-    char **splits;
-    int size_arr;
-    int size_str;
-    int i;
+	unsigned	i;
+	unsigned	start;
+	char		*word;
 
-    i = 0;
-    size_arr = 0;
-    size_str = 0;
-    while(s[i])
-        i++;
-    splits = (char**)malloc(sizeof(char**)* i);
-    i = 0;
-    while(s[i])
-    {
-        if (s[i] != c)
-        {
-            size_str++;
-        }
-        else if (size_str > 0)
-        {
-            splits[size_arr++] = (char *)malloc(sizeof(char*)*size_str+1);
-            size_str = 0;
-        }
-        i++;
-    }
-    size_str = 0;
-    size_arr = 0;
-    i = 0;
-    while (s[i])
-    {
-        if(s[i] != c)
-        {
-            splits[size_arr][size_str++] = s[i];
-        }
-        else if (size_str > 0)
-        {
-            splits[size_arr][size_str] = '\0';
-            size_str = 0;
-            size_arr++;
-        }
-        i++;
-    }
+	while (str[*index] == c && str[*index] != '\0')
+		(*index)++;
+	start = *index;
+	while (str[*index] != c && str[*index] != '\0')
+		(*index)++;
+	word = ft_strnew(*index - start);
+	if (!word)
+		return (NULL);
+	i = 0;
+	while (start < *index)
+	{
+		word[i] = str[start];
+		start++;
+		i++;
+	}
+	word[i] = '\0';
+	return (word);
+}
 
+char		**ft_strsplit(char const *s, char c)
+{
+	unsigned	i;
+	unsigned	j;
+	unsigned	words;
+	char		**rtn;
+
+	i = 0;
+	words = 0;
+	while (s[i] != '\0')
+	{
+		if (s[i] != c && (s[i + 1] == c || s[i + 1] == '\0'))
+			words++;
+		i++;
+	}
+	i = 0;
+	j = 0;
+	rtn = (char**)malloc(sizeof(char*) * (words + 1));
+	if (!rtn)
+		return (NULL);
+	while (i < words)
+	{
+		rtn[i] = word_builder(s, c, &j);
+		i++;
+	}
+	rtn[i] = 0;
+	return (rtn);
 }

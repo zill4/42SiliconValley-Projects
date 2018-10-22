@@ -6,7 +6,7 @@
 /*   By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/05 02:54:27 by jcrisp            #+#    #+#             */
-/*   Updated: 2018/10/08 14:26:35 by jcrisp           ###   ########.fr       */
+/*   Updated: 2018/10/21 17:14:36 by jcrisp           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,12 @@
 
 void	ft_strdel(char **as)
 {
-	if (*as != NULL)
-		ft_memdel((void **)as);
+	if (as)
+	{
+		if (*as != NULL)
+		{
+			free(*as);
+			*as = NULL;
+		}
+	}
 }

@@ -6,7 +6,7 @@
 #    By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/09/11 20:23:35 by jcrisp            #+#    #+#              #
-#    Updated: 2018/09/17 16:22:21 by jcrisp           ###   ########.fr        #
+#    Updated: 2018/10/21 16:02:35 by jcrisp           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 CC = gcc
@@ -19,7 +19,8 @@ FILES = ./ft_atoi.c ./ft_memalloc.c ./ft_putchar.c ./ft_strcat.c ./ft_striter.c 
 ./ft_isascii.c ./ft_memcpy.c ./ft_putnbr.c ./ft_strcpy.c ./ft_strlen.c ./ft_strnstr.c \
 ./ft_isdigit.c ./ft_memdel.c ./ft_putnbr_fd.c ./ft_strdel.c ./ft_strmap.c ./ft_strrchr.c \
 ./ft_isprint.c ./ft_memmove.c ./ft_putstr.c ./ft_strdup.c ./ft_strmapi.c ./ft_strsplit.c \
-./ft_itoa.c ./ft_memset.c ./ft_putstr_fd.c ./ft_strequ.c ./ft_strncat.c ./ft_strstr.c ./ft_strtrim.c
+./ft_itoa.c ./ft_memset.c ./ft_putstr_fd.c ./ft_strequ.c ./ft_strncat.c ./ft_strstr.c ./ft_strtrim.c \
+./ft_lstnew.c ./ft_lstdelone.c ./ft_lstdel.c ./ft_lstadd.c ./ft_lstiter.c ./ft_lstmap.c
 OBJ = $(FILES:%.c=%.o)
 
 $(NAME): 

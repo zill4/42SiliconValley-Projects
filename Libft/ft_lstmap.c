@@ -1,30 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memcpy.c                                        :+:      :+:    :+:   */
+/*   ft_lstmap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/10/05 02:49:18 by jcrisp            #+#    #+#             */
-/*   Updated: 2018/10/11 20:55:34 by jcrisp           ###   ########.fr       */
+/*   Created: 2018/10/11 19:50:36 by jcrisp            #+#    #+#             */
+/*   Updated: 2018/10/21 16:59:50 by jcrisp           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_memcpy(void *dst, const void *src, size_t n)
+t_list	*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem))
 {
-	size_t		i;
-	char		*p_dst;
-	char		*p_src;
+	t_list *head;
+	t_list *lastnode;
+	t_list *currentnode;
 
-	i = 0;
-	p_src = (char *)src;
-	p_dst = (char *)dst;
-	while (i < n)
+	if (lst && f)
 	{
-		*(char *)(p_dst + i) = *(char *)(p_src + i);
-		i++;
+		head = f(lst);
+		if (!head)
+			return (NULL);
+		lst = lst->next;
+		lastnode = head;
+		while (lst)
+		{
+			currentnode = f(lst);
+			if (!currentnode)
+				return (NULL);
+			lastnode->next = currentnode;
+			lastnode = currentnode;
+			lst = lst->next;
+		}
+		return (head);
 	}
-	return (dst);
+	return (NULL);
 }

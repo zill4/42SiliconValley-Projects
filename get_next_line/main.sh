@@ -1,0 +1,1 @@
+gcc -o go main.c get_next_line.a -I ./libft/libft.h

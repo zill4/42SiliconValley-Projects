@@ -1,23 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_lstdel.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/27 11:16:48 by jcrisp            #+#    #+#             */
-/*   Updated: 2018/11/27 11:17:35 by jcrisp           ###   ########.fr       */
+/*   Created: 2018/10/11 19:40:59 by jcrisp            #+#    #+#             */
+/*   Updated: 2018/10/21 16:48:04 by jcrisp           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
-# include "./libft/libft.h"
-# include <unistd.h>
-# include <stdlib.h>
-# define BUFF_SIZE 5
+#include "libft.h"
 
-int		get_next_line(const int fd, char **line);
-int		ft_stralloc(char **str, char **line, int fd, int val);
-
-#endif
+void	ft_lstdel(t_list **alst, void (*del)(void *, size_t))
+{
+	if (*alst)
+	{
+		while (*alst)
+		{
+			del((*alst)->content, (*alst)->content_size);
+			free(*alst);
+			*alst = (*alst)->next;
+		}
+		*alst = NULL;
+	}
+}

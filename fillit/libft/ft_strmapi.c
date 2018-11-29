@@ -1,23 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_strmapi.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/27 11:16:48 by jcrisp            #+#    #+#             */
-/*   Updated: 2018/11/27 11:17:35 by jcrisp           ###   ########.fr       */
+/*   Created: 2018/10/05 02:57:10 by jcrisp            #+#    #+#             */
+/*   Updated: 2018/10/08 14:56:11 by jcrisp           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
-# include "./libft/libft.h"
-# include <unistd.h>
-# include <stdlib.h>
-# define BUFF_SIZE 5
+#include "libft.h"
 
-int		get_next_line(const int fd, char **line);
-int		ft_stralloc(char **str, char **line, int fd, int val);
+char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
+{
+	unsigned	i;
+	char		*nstr;
 
-#endif
+	i = 0;
+	nstr = ft_strnew(ft_strlen((char*)s));
+	if (!nstr)
+		return (NULL);
+	while (s[i])
+	{
+		nstr[i] = f(i, s[i]);
+		i++;
+	}
+	nstr[i] = '\0';
+	return (nstr);
+}

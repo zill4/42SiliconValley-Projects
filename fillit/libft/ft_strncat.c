@@ -1,23 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_strncat.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/27 11:16:48 by jcrisp            #+#    #+#             */
-/*   Updated: 2018/11/27 11:17:35 by jcrisp           ###   ########.fr       */
+/*   Created: 2018/10/05 02:57:22 by jcrisp            #+#    #+#             */
+/*   Updated: 2018/10/11 20:56:22 by jcrisp           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
-# include "./libft/libft.h"
-# include <unistd.h>
-# include <stdlib.h>
-# define BUFF_SIZE 5
+#include "libft.h"
 
-int		get_next_line(const int fd, char **line);
-int		ft_stralloc(char **str, char **line, int fd, int val);
+char	*ft_strncat(char *s1, const char *s2, size_t n)
+{
+	int i;
+	int k;
 
-#endif
+	k = 0;
+	i = ft_strlen(s1);
+	while (s2[k] && k < (int)n)
+		s1[i++] = s2[k++];
+	s1[i] = '\0';
+	return (s1);
+}

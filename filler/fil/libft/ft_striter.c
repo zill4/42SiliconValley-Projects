@@ -1,23 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_striter.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/27 11:16:48 by jcrisp            #+#    #+#             */
-/*   Updated: 2018/11/27 11:17:35 by jcrisp           ###   ########.fr       */
+/*   Created: 2018/10/05 02:55:09 by jcrisp            #+#    #+#             */
+/*   Updated: 2018/10/21 17:16:59 by jcrisp           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
-# include "./libft/libft.h"
-# include <unistd.h>
-# include <stdlib.h>
-# define BUFF_SIZE 5
+#include "libft.h"
 
-int		get_next_line(const int fd, char **line);
-int		ft_stralloc(char **str, char **line, int fd, int val);
-
-#endif
+void	ft_striter(char *s, void (*f)(char *))
+{
+	int i;
+	
+	if (s && f)
+	{
+		i = 0;
+		while (s[i] != '\0')
+		{
+			f(&s[i]);
+			i++;
+		}
+	}
+}

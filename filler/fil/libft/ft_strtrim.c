@@ -1,23 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/27 11:16:48 by jcrisp            #+#    #+#             */
-/*   Updated: 2018/11/27 11:17:35 by jcrisp           ###   ########.fr       */
+/*   Created: 2018/10/05 03:00:17 by jcrisp            #+#    #+#             */
+/*   Updated: 2018/10/08 15:29:59 by jcrisp           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
-# include "./libft/libft.h"
-# include <unistd.h>
-# include <stdlib.h>
-# define BUFF_SIZE 5
+#include "libft.h"
 
-int		get_next_line(const int fd, char **line);
-int		ft_stralloc(char **str, char **line, int fd, int val);
+char	*ft_strtrim(char const *s)
+{
+	size_t		i;
+	size_t		start;
+	size_t		end;
+	char		*nstr;
 
-#endif
+	i = 0;
+	while (s[i] <= ' ' && s[i])
+		i++;
+	start = i;
+	while (s[i])
+		i++;
+	while (s[i] <= ' ' && i > start)
+		i--;
+	end = i;
+	nstr = ft_strnew(end - start + 1);
+	if (!nstr)
+		return (NULL);
+	i = 0;
+	while (start++ <= end)
+		nstr[i++] = s[start - 1];
+	nstr[i] = '\0';
+	return (nstr);
+}

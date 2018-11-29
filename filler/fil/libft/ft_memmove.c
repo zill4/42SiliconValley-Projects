@@ -1,23 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/27 11:16:48 by jcrisp            #+#    #+#             */
-/*   Updated: 2018/11/27 11:17:35 by jcrisp           ###   ########.fr       */
+/*   Created: 2018/10/05 02:49:45 by jcrisp            #+#    #+#             */
+/*   Updated: 2018/10/08 13:56:26 by jcrisp           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
-# include "./libft/libft.h"
-# include <unistd.h>
-# include <stdlib.h>
-# define BUFF_SIZE 5
+#include "libft.h"
 
-int		get_next_line(const int fd, char **line);
-int		ft_stralloc(char **str, char **line, int fd, int val);
+void	*ft_memmove(void *dst, const void *src, size_t len)
+{
+	size_t	i;
+	char	*p_src;
+	char	*p_dst;
 
-#endif
+	i = 0;
+	p_src = (char *)src;
+	p_dst = (char *)dst;
+	if (p_src > p_dst)
+		while (i < len)
+		{
+			*(p_dst + i) = *(p_src + i);
+			i++;
+		}
+	else
+		while (len-- > 0)
+			*(p_dst + len) = *(p_src + len);
+	return (dst);
+}

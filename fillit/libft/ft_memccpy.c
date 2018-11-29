@@ -1,23 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_memccpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/27 11:16:48 by jcrisp            #+#    #+#             */
-/*   Updated: 2018/11/27 11:17:35 by jcrisp           ###   ########.fr       */
+/*   Created: 2018/10/05 02:48:52 by jcrisp            #+#    #+#             */
+/*   Updated: 2018/10/08 15:35:35 by jcrisp           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
-# include "./libft/libft.h"
-# include <unistd.h>
-# include <stdlib.h>
-# define BUFF_SIZE 5
+#include "libft.h"
 
-int		get_next_line(const int fd, char **line);
-int		ft_stralloc(char **str, char **line, int fd, int val);
+void	*ft_memccpy(void *dst, const void *src, int c, size_t n)
+{
+	size_t	count;
+	char	*d;
+	char	*s;
 
-#endif
+	d = (char*)dst;
+	s = (char*)src;
+	count = 0;
+	while (count < n)
+	{
+		d[count] = s[count];
+		if (d[count] == c)
+			return ((void*)&d[count + 1]);
+		count++;
+	}
+	return (NULL);
+}

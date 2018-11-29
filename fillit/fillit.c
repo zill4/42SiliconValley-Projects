@@ -8,10 +8,11 @@
                 && t_block.y position. A 0 is returned if the line is empty.
                 A -1 is returned if the format is bad. A 1 is returned if success.
 */
-int parseTetri(t_block *blocks, int i, int y, char* str)
+int parseTetri(t_block *blocks, int *i, char* str)
 {
     int x;
-
+    int y;
+    y = 0;
     x = 0;
     if (str == NULL)
         return (-1);
@@ -26,9 +27,9 @@ int parseTetri(t_block *blocks, int i, int y, char* str)
         */
         if (str[x] == '#')
         {
-            blocks->point[i].x = x;
-            blocks->point[i].y = y;
-            i++;
+            blocks->point[*i].x = x;
+            blocks->point[*i].y = y;
+            *i++;
         }
         x++;
     }
@@ -40,6 +41,13 @@ int main()
     /* Variables */ 
     int fileDesc; 
     char *temp; //Container for the parsing of files.
+    int y;
+    int index;
+    int i = 0;
+    int ret;
+    ret = 42;
+    y = 0;
+    index = 0;
     //t_point test_p;
     //t_block block;
     t_block blocks[4];
@@ -51,10 +59,18 @@ int main()
             printf("The file provided is invalid\n");
             return (0);
     } 
-    /* Print the file iteratively */
+    get_next_line(fileDesc, &temp);
+    ret = parseTetri(&blocks[index], &i, temp);
+    printf("Return: %d Block Number: %d, X: %d, Y: %d\n", ret, index, blocks[index].point[i].x,blocks[index].point[i].y);
+    ret = parseTetri(&blocks[index], &i, temp);
+    printf("Return: %d Block Number: %d, X: %d, Y: %d\n", ret, index, blocks[index].point[i].x,blocks[index].point[i].y);
+    /* Print the file iteratively 
+    
     while (get_next_line(fileDesc,&temp))
     {
-        printf("Line: %s\n", temp);    
+        printf("Line: %s\n", temp);
+
     }
+    */
     return (0);
 }

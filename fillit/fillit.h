@@ -11,7 +11,8 @@ typedef struct  s_point
 
 typedef struct  s_block
 {
-                t_point point[4];
+                //until linked listed static 676 is used for max map.
+                t_point point[676];
                 int x_dim;
                 int y_dim;
 }               t_block;

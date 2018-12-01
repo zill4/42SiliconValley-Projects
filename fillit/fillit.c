@@ -35,6 +35,11 @@ int parseTetri(t_block *blocks, int *i, int *y, char* str)
     return (1);
 }
 /*
+    prototype void  normalizePoints(t_block *block)
+    description:    takes all points sets them such that a least one point is == 0
+*/
+
+/*
     prototype int   checkDim(t_block block)
     Description: checkDim, checks the dimensionality of a block.
                 If a block is 1x4, 2x2, or 2x3 and the reverse of those.
@@ -45,17 +50,19 @@ int parseTetri(t_block *blocks, int *i, int *y, char* str)
 int     checkDim(t_block *block)
 {
     int i;
+    int k;
     int x_min;
     int x_max;
     int y_min;
     int y_max;
 
     i = 0;
+    k = 0;
     x_min = block->point[0].x;
     y_min = block->point[0].y;
     x_max = block->point[0].x;
     y_max = block->point[0].y;
-    while(i < 4)
+    while (i < 4)
     {
         if (block->point[i].x > x_max)
             x_max = block->point[i].x;
@@ -69,10 +76,29 @@ int     checkDim(t_block *block)
         if (x_min < 0 || x_max > 3)
             return (0);
     }
+    /* normalize the points such that at least 1 is min 0, for simpler placing */
+    if (x_min > 0)
+    {
+        i = 0;
+        while (i < 4)
+            block->point[i++].x -= x_min;
+    }
+    if (y_min > 0)
+    {
+        i = 0;
+        while (i < 4)
+            block->point[i++].y -= y_min;
+    }
         block->x_dim = (x_max - x_min) + 1;
         block->y_dim = (y_max - y_min) + 1;
     return(1);
 }
+
+/*
+    prototype void printAll(t_point finalDim, int mapDim)
+    Description: printAll takes the maximum dimension of the map.,
+                and the worst case scenario 
+*/
 void    printAll(t_point finalDim, int mapDim)
 {
     int i;
@@ -96,6 +122,163 @@ void    printAll(t_point finalDim, int mapDim)
     }
 }
 /*
+    protoype  int   placePoint(char **map, t_block *blocks, t_point mapPoints, int index)
+            Description:  Tries to recursively place a point based on the mapPoints location in the map.
+                        Points are placed till the either the block is finished or a spot is not available.
+                        If a spot is not free the function is called again with a change in first the x position, then the y position.
+                        Should not happen but if a spot just cannot befound a critical error is thrown.
+*/
+
+/*
+    prototype int   checkMap(char** map, t_block block, int mapSize, t_point offset)
+    {
+
+    }
+*/
+int         checkMap(char** map, t_block block, int mapSize, t_point *offset)
+{
+    int i;
+    int x = offset->x;
+    int y = offset->y;
+    int px;
+    int py;
+    i = 0;
+    px = 0;
+    py = 0;
+    printf("%d Map %d\n",i,mapSize);
+
+
+ 
+      
+    while (i < 4)
+    {
+            px = block.point[i].x;
+        py = block.point[i].y;
+        printf("Block X: %d Y: %d\n", px, py);
+        printf("Map offset X: %d Y: %d\n",x, y);
+        printf("Map Value: %c\n",map[y + py][x + px]);
+
+        if (map[y + py][x + px] == '.')
+        {
+            i++;
+            printf("I IS %d\n", i);
+        }
+        else
+        {
+            if (y >= mapSize)
+                return (0);
+            if (x >= mapSize)
+            {
+                x = 0;
+                y++;
+            }
+            else
+            {
+                x++;
+            }
+
+        }
+    }
+    return (1);
+}
+
+
+int         placeMap(char** map, t_block block, int mapSize, t_point *offset)
+{
+    int i;
+    int x = offset->x;
+    int y = offset->y;
+    int px;
+    int py;
+    px = 0;
+    py = 0;
+    i = 0;
+    printf("%d Map\n",mapSize);
+    while (i < 4)
+    {
+        px = block.point[i].x;
+        py = block.point[i].y;
+        printf("Block X: %d Y: %d\n", px, py);
+        printf("Map offset X: %d Y: %d\n",x, y);
+        printf("Map Value: %c\n",map[0][0]);
+      
+        if (map[y][x] == '.')
+        {
+            map[y][x] = '#';
+            i++;
+        }
+        else
+        {
+            printf("PLACE ERROR\n");
+            return (0);
+        }
+    }
+    return (1);
+}
+/*
+    prototype void  tetriMap(char **map, t_block *blocks, int mapMax)
+    Description: for the dimensions of the map, each block is paced in the left upper
+        most position. If a position is unavailable then it is tansformed in the x direction 
+        checks spacing and repeats until it can be placed.
+*/
+
+void    tetriMap(char **map, t_block *blocks, int index, int mapMax)
+{
+    
+    int i;
+    int j;
+    t_point dim;
+    t_point offset;
+
+    offset.x = 0;
+    offset.y = 0;
+    dim.x = 0;
+    dim.y = 0;
+    j = 0; //point iterator
+    i = 0; //block iterator
+
+    while (i < index)
+    {
+        if (checkMap(map, blocks[i], mapMax, &offset))
+        {
+            printf("Map is good with an offset of X: %d, Y: %d\n", offset.x, offset.y);
+            placeMap(map, blocks[i], mapMax, &offset);
+        }
+        i++;
+    }
+    
+}
+
+/*
+    prototype void  initMap(char **map, int dim)
+        initMap takes a pointer to a map, initializes the map to a series of '.''s
+*/
+
+char**   initMap(char **map, int dim)
+{
+    int x;
+    int y;
+
+    x = 0;
+    y = 0;
+    map = (char**)malloc(dim);
+    while(y < dim)
+    {
+        map[y] = (char*)malloc(dim + 1); 
+        while(x < dim)
+        {
+            map[y][x] = '.';
+            ft_putchar(map[y][x]);
+            x++;
+        }
+        ft_putchar('\n');
+        map[y][x] = '\0';
+        x = 0;
+        y++;
+    }
+    return (map);
+}
+/*
     prototype void  printMap(int index)
     Description: printMap, takes the index of the counted blocks and
                 creates the maximum map size for those blocks.
@@ -106,6 +289,9 @@ void    printMap(int index, t_block *blocks)
 {
     int i;
     int dimMap;
+    char **map;
+
+    map = NULL;
     t_point dimPrint;
     dimMap = 17;
     dimPrint.x = 0;
@@ -116,25 +302,17 @@ void    printMap(int index, t_block *blocks)
         /* This set of if statements finds space taken of tetris blocks */
         if (blocks[i].x_dim <= blocks[i].y_dim)
         {
-            if (dimPrint.x > dimPrint.y)
-                dimPrint.y += blocks[i].x_dim;
-            else
-            {
-                dimPrint.x += blocks[i].x_dim;
-                if (blocks[i].y_dim > dimPrint.y)
-                    dimPrint.y = blocks[i].y_dim;
-            }   
+            dimPrint.x += blocks[i].x_dim;
+            if (blocks[i].y_dim > dimPrint.y || dimPrint.y== 0)
+                dimPrint.y = blocks[i].y_dim;
+            printf("The Dimensions of the map are, (X: %d, Y: %d)\n", dimPrint.x, dimPrint.y);
         }
         else
         {
-            if (dimPrint.y > dimPrint.x)
-                dimPrint.x += blocks[i].y_dim;
-            else
-            {
-                dimPrint.y += blocks[i].y_dim;
-                if (blocks[i].x_dim > dimPrint.x)
-                    dimPrint.x = blocks[i].x_dim;
-            }
+            dimPrint.y += blocks[i].y_dim;
+            if (blocks[i].x_dim > dimPrint.x || dimPrint.x == 0)
+                dimPrint.x = blocks[i].x_dim;
+            printf("The Dimensions of the map are, (X: %d, Y: %d)\n", dimPrint.x, dimPrint.y);
         }
         i++;
     }
@@ -142,6 +320,13 @@ void    printMap(int index, t_block *blocks)
         dimMap = dimPrint.x;
     else
         dimMap = dimPrint.y;
+    /* After the max dimensions have been found, we can place init and place on map */
+    
+    /* Initialize a map for places tetri */
+    map = initMap(map, dimMap);
+    tetriMap(map,blocks, index, dimMap);
+    //(map, blocks, index, dimMap)
+    /* places tetri on map */
     printf("The Dimensions of the map are, (X: %d, Y: %d)\n", dimPrint.x, dimPrint.y);
     printAll(dimPrint, dimMap);
 }
@@ -209,7 +394,7 @@ int main()
 
     for (int k = 0; k < index; k++)
     {
-        for(int j =0; j < index; j++)
+        for(int j =0; j < 4; j++)
         {
             printf("Block: %d, Point: %d, Value(x: %d, y: %d)\n",k,j,blocks[k].point[j].x, blocks[k].point[j].y);
         }

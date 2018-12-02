@@ -14,4 +14,4 @@ Libft will contain a make file which you can create buy simpley running ``` make
 This is all written in C and was compiled on GCC.
 
 
-* Thank you for checking out my repo!
+# Thank you for checking out my repo!

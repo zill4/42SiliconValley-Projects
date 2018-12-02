@@ -135,9 +135,10 @@ void    printAll(t_point finalDim, int mapDim)
 
     }
 */
-int         checkMap(char** map, t_block block, int mapSize, t_point *offset)
+int         checkMap(char map[17][17], t_block block, int mapSize, t_point *offset)
 {
     int i;
+    int k = 0;
     int x = offset->x;
     int y = offset->y;
     int px;
@@ -146,8 +147,17 @@ int         checkMap(char** map, t_block block, int mapSize, t_point *offset)
     px = 0;
     py = 0;
     printf("%d Map %d\n",i,mapSize);
-
-
+    while ( i < mapSize)
+    {
+        while (k < mapSize)
+        {
+            ft_putchar(map[i][k]);
+            k++;
+        }
+        ft_putchar('\n');
+        k = 0;
+        i++;
+    }
  
       
     while (i < 4)
@@ -183,7 +193,7 @@ int         checkMap(char** map, t_block block, int mapSize, t_point *offset)
 }
 
 
-int         placeMap(char** map, t_block block, int mapSize, t_point *offset)
+int         placeMap(char map[17][17], t_block block, int mapSize, t_point *offset)
 {
     int i;
     int x = offset->x;
@@ -222,7 +232,7 @@ int         placeMap(char** map, t_block block, int mapSize, t_point *offset)
         checks spacing and repeats until it can be placed.
 */
 
-void    tetriMap(char **map, t_block *blocks, int index, int mapMax)
+void    tetriMap(char map[17][17], t_block *blocks, int index, int mapMax)
 {
     
     int i;
@@ -254,17 +264,15 @@ void    tetriMap(char **map, t_block *blocks, int index, int mapMax)
         initMap takes a pointer to a map, initializes the map to a series of '.''s
 */
 
-char**   initMap(char **map, int dim)
+void  initMap(char map[17][17], int dim)
 {
     int x;
     int y;
 
     x = 0;
     y = 0;
-    map = (char**)malloc(dim);
     while(y < dim)
     {
-        map[y] = (char*)malloc(dim + 1); 
         while(x < dim)
         {
             map[y][x] = '.';
@@ -276,7 +284,6 @@ char**   initMap(char **map, int dim)
         x = 0;
         y++;
     }
-    return (map);
 }
 /*
     prototype void  printMap(int index)
@@ -289,9 +296,8 @@ void    printMap(int index, t_block *blocks)
 {
     int i;
     int dimMap;
-    char **map;
+    char map[17][17];
 
-    map = NULL;
     t_point dimPrint;
     dimMap = 17;
     dimPrint.x = 0;
@@ -323,7 +329,7 @@ void    printMap(int index, t_block *blocks)
     /* After the max dimensions have been found, we can place init and place on map */
     
     /* Initialize a map for places tetri */
-    map = initMap(map, dimMap);
+    initMap(map, dimMap);
     tetriMap(map,blocks, index, dimMap);
     //(map, blocks, index, dimMap)
     /* places tetri on map */

@@ -293,8 +293,7 @@ void    printMap(int index, t_block *blocks)
     dimPrint.x = 0;
     dimPrint.y = 0;
     i = 0;
-    if (index == 1)
-        i--;
+    
     while (i < index - 1)
     {
         /* This set of if statements finds space taken of tetris blocks */
@@ -343,7 +342,7 @@ int main()
     
     t_block blocks[26];
     /* Open file for testing */
-   fileDesc = open("invalid_test", O_RDONLY);
+   fileDesc = open("test", O_RDONLY);
     /* Check file if file is valid. */
     if (fileDesc <= 0) 
     {
@@ -381,8 +380,7 @@ int main()
         }
         else
             return (0);
-        if (i > 4)
-            return (-1);
+
     }
 
     printf("I is %d\n",i);

@@ -199,66 +199,41 @@ void  initMap(char map[17][17], int dim)
 */
 int         checkMap(char map[17][17], t_block block, int mapSize, int l, t_point *lastPlace, t_point *offset)
 {
-
+    int k = 0;
 	int ox = offset->x;
 	int oy = offset->y;
+
     int x;
     x = 0;
     int y; 
     y = 0;
+    int i = 0;
     char *lett = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     printf("The map Size is :%d Dimension size is: (%d, %d)\n", mapSize, block.x_dim, block.y_dim);
-    //mapSize -= 1;
-
+    mapSize -= 1;
+    if (block.point[0].y > mapSize || \
+    block.point[0].x > mapSize || \
+    block.point[1].y > mapSize || \
+    block.point[1].x > mapSize || \
+	block.point[2].y > mapSize || \
+    block.point[2].x > mapSize || \
+    block.point[3].y > mapSize || \
+    block.point[3].x > mapSize)
+		return (-1);
     
     printf("Offset X: %d & Offset Y: %d\n", ox, oy);
     while (y < mapSize)
     {
         while (x < mapSize)
         {  
-
-                if (y + block.point[0].y + oy >= mapSize){
-                    printf("Value of dimension scan: %d\n", -1 * ((y + block.point[0].y + ox) - mapSize));
-                    return (-1 * ((y + block.point[0].y + ox) - mapSize));
-                }
-                if (x + block.point[0].x + ox >= mapSize){
-                    printf("Value of dimension scan: %d\n", -1 * ((x + block.point[0].x + ox) - mapSize));
-                    return (-1 * ((x + block.point[0].x + ox) - mapSize));
-                }
-                if (y + block.point[1].y + oy >= mapSize)
-                {
-                    printf("Value of dimension scan: %d\n", -1 * ((y + block.point[1].y + ox) - mapSize));
-                    return (-1 * ((y + block.point[1].y + ox) - mapSize));
-                }
-                if (x + block.point[1].x + ox >= mapSize)
-                {
-                    printf("Value of dimension scan: %d\n", -1 * ((x + block.point[1].x + ox) - mapSize));
-                    return (-1 * ((x + block.point[1].x + ox) - mapSize));
-                }
-                if (x + block.point[2].x + ox >= mapSize){
-                    printf("Value of dimension scan: %d\n", -1 * ((x + block.point[2].x + ox) - mapSize));
-                    return (-1 * ((x + block.point[2].x + ox) - mapSize));
-                }
-                if (y + block.point[2].y + oy >= mapSize){
-                    printf("Value of dimension scan: %d\n", -1 * ((y + block.point[2].y + ox) - mapSize));
-                    return (-1 * ((y + block.point[2].y + ox) - mapSize));
-                }
-                if (x + block.point[3].x + ox >= mapSize){
-                    printf("Value of dimension scan: %d\n", -1 * ((x + block.point[3].x + ox) - mapSize));
-                    return (-1 * ((x + block.point[3].x + ox) - mapSize));
-                }
-                if (y + block.point[3].y + oy >= mapSize){
-                    printf("Value of dimension scan: %d\n", -1 * ((y + block.point[3].y + ox) - mapSize));
-                    return (-1 * ((y + block.point[3].y + ox) - mapSize));
-                }
-                
-
-        
-
             if ((map[y + block.point[0].y][x + block.point[0].x] == '.')&& \
                 (map[y + block.point[1].y][x + block.point[1].x ] == '.')&& \
 			    (map[y + block.point[2].y][x + block.point[2].x]  == '.')&& \
-                (map[y + block.point[3].y][x + block.point[3].x]  == '.'))
+                (map[y + block.point[3].y][x + block.point[3].x]  == '.') && 
+                y + block.point[0].y  + oy <= mapSize && y + block.point[1].y + oy <= mapSize \
+                && y + block.point[2].y + oy <= mapSize && y + block.point[3].y + oy <= mapSize \
+                && x + block.point[0].x + ox <= mapSize && x + block.point[1].x + ox <= mapSize \
+                && x + block.point[2].x + ox <= mapSize && x + block.point[3].x + ox <= mapSize)
             {
                 printf("Placing #\n");
                 
@@ -277,15 +252,45 @@ int         checkMap(char map[17][17], t_block block, int mapSize, int l, t_poin
                 offset->y = 0;
                 l++;
         
-                printMapPls(map,mapSize);
+                k = 0;
+                while ( i <= mapSize)
+                {
+                    while (k <= mapSize)
+                    {
+                        ft_putchar(map[i][k]);
+                        k++;
+                    }
+                    ft_putchar('\n');
+                    k = 0;
+                    i++;
+                }   
                 return (1);
+            
             }
            x++;
         }
         x = 0;
         y++;
     }
+                   // printf("Map Points\n%d  %d\n", y + block.point[3].y + oy,x + block.point[3].x + ox);
+                //printf("%d  %d\n", y + block.point[2].y,x + block.point[2].x);
+                //printf("%d  %d\n", y + block.point[1].y,x + block.point[1].x);
+                //printf("%d  %d\n", y + block.point[0].y,x + block.point[0].x);
+    if (offset->x < mapSize)
+    {
+        offset->x++;
+    }
+    else if (offset->x >= mapSize)
+    {
+        offset->x = 0;
+        offset->y++;
+    }
+    if (offset->y > mapSize && offset->x >= mapSize)
+    {
+        printf("HOLY POTATOS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n\n\n\n\n\n\n");
 
+    }
+    
     return (0);
 }
 /*
@@ -301,42 +306,34 @@ void    tetriMap(char map[17][17], t_block *blocks, int index, int mapMax, int i
     int y = lastPlace.y;
 	int ret = 0;
     //printf("At position: %d size of map: %d\n",i,mapMax);
-    while(i < index)
+   
+    if (i >= index)
+        return ;
+    else if ((ret = (checkMap(map, blocks[i], mapMax, i, &lastPlace, &offset))) > 0)
     {
-        //char map[17][17], t_block block, int mapSize, int l, t_point *lastPlace, t_point *offset)
-        if ((ret = checkMap(map, blocks[i], mapMax, i, &lastPlace, &offset)))
-            i++;
-        else if (ret < 0)
-        {
-            printf("Map before change: %d\n", mapMax);
-            mapMax += (ret * -1);
-            printf("Map after change: %d\n", mapMax);            
-        }
-        else
-        {
-            if(offset.x < mapMax && offset.y < mapMax)
-            {
-                offset.x++;
-            }
-            else if (offset.y < mapMax)
-            {
-                offset.y++;
-                offset.x = 0;
-            }
-            else
-            {
-                map[y + blocks[i].point[3].y][x + blocks[i].point[3].x] = '.';
-                map[y + blocks[i].point[2].y][x + blocks[i].point[2].x] = '.';
-                map[y + blocks[i].point[1].y][x + blocks[i].point[1].x] = '.';
-                map[y][x] = '.';
-                offset.y = 0;
-                offset.x = 1;
-                i--;
-		        //tetriMap(map, blocks, index, mapMax, i, lastPlace, offset);	 
-                printMapPls(map,mapMax);
-            }
-        }
+        i++;
     }
+    else if (ret == -1 )
+    {
+        mapMax++;
+        initMap(map,mapMax);
+    }
+    else if (offset.y > mapMax)
+    {
+        //printf("The offset x + lastplace: %d Offset y + lastplace: %d\n", offset.x + x, offset.y + y);
+		i--;
+        map[y + blocks[i].point[3].y][x + blocks[i].point[3].x] = '.';
+        map[y + blocks[i].point[2].y][x + blocks[i].point[2].x] = '.';
+        map[y + blocks[i].point[1].y][x + blocks[i].point[1].x] = '.';
+        map[y][x] = '.';
+        offset.y = 0;
+        offset.x = 1;
+		//tetriMap(map, blocks, index, mapMax, i, lastPlace, offset);	
+        printf("Deleting\n");   
+        printMapPls(map,mapMax);
+    }
+     //printf("Offset X: %d & Offset Y: %d\n", offset.x, offset.y);
+        tetriMap(map, blocks, index, mapMax, i, lastPlace, offset);
 }
 
 

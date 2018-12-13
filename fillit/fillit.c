@@ -233,9 +233,9 @@ int         checkMap(char map[17][17], t_block block, int mapSize, int l, t_poin
                 // printf("%c\n", map[y + block.point[2].y][x + block.point[2].x]);
                 // printf("%c\n------\n",map[y + block.point[3].y][x + block.point[3].x]);
             if ((map[y + block.point[0].y][x + block.point[0].x] == '.')&& \
-                (map[y + block.point[1].y][x + block.point[1].x ] == '.')&& \
-			    (map[y + block.point[2].y][x + block.point[2].x]  == '.')&& \
-                (map[y + block.point[3].y][x + block.point[3].x]  == '.')&& 
+                (map[y + block.point[1].y][x + block.point[1].x] == '.')&& \
+			    (map[y + block.point[2].y][x + block.point[2].x] == '.')&& \
+                (map[y + block.point[3].y][x + block.point[3].x] == '.')&& 
                 y + block.point[0].y  + oy <= mapSize && y + block.point[1].y + oy <= mapSize \
                 && y + block.point[2].y + oy <= mapSize && y + block.point[3].y + oy <= mapSize \
                 && x + block.point[0].x + ox <= mapSize && x + block.point[1].x + ox <= mapSize \
@@ -270,15 +270,16 @@ int         checkMap(char map[17][17], t_block block, int mapSize, int l, t_poin
                     i++;
                 }   
                 return (1);
-            
             }
            x++;
         }
         x = 0;
         y++;
     }
-    if (block.x_dim >= y || block.y_dim >= y || y < dimMax)
+    if (block.x_dim >= y || block.y_dim >= y)
         return (-1);
+    if (block.point[0].y + y < dimMax)
+        return (0);
 
     return (0);
 }
@@ -308,7 +309,7 @@ void    tetriMap(char map[17][17], t_block *blocks, int index, int mapMax, int i
         mapMax++;
         //initMap(map,mapMax);
         }   
-        else 
+        else if (ret == 0)
         {
             printf("The offset x + lastplace: %d Offset y + lastplace: %d\n", offset.x + x, offset.y + y);
             if (offset.x < mapMax && offset.y < mapMax)
@@ -325,13 +326,14 @@ void    tetriMap(char map[17][17], t_block *blocks, int index, int mapMax, int i
             map[y + blocks[i].point[2].y][x + blocks[i].point[2].x] = '.';
             map[y + blocks[i].point[1].y][x + blocks[i].point[1].x] = '.';
             map[y][x] = '.';
-            //offset.x++;
+            offset.x++;
             //tetriMap(map, blocks, index, mapMax, i, lastPlace, offset);	
             printf("Deleting\n");   
             printMapPls(map,mapMax);
         }
-    }
         printf("Offset X: %d & Offset Y: %d\n", offset.x, offset.y);
+    }
+        
         //tetriMap(map, blocks, index, mapMax, i, lastPlace, offset, dimMax);
 }
 

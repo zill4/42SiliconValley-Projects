@@ -316,6 +316,11 @@ int         checker(char map[17][17], t_block block, int mapSize, t_point *lastP
                 && x + block.point[0].x <= mapSize && x + block.point[1].x <= mapSize \
                 && x + block.point[2].x <= mapSize && x + block.point[3].x <= mapSize)
             {
+                printf("The fabulous block #: %d was found of letter %c at pos X: %d Y: %d\n", i, lett[i], x, y);
+                printf(" 0 Block pos X: %d Y: %d -- value %c\n", block.point[0].x, block.point[0].y, map[y + block.point[0].y][x + block.point[0].x]);
+                printf(" 1 Block pos X: %d Y: %d -- value %c\n", block.point[1].x, block.point[1].y, map[y + block.point[1].y][x + block.point[1].x]);
+                printf(" 2 Block pos X: %d Y: %d -- value %c\n", block.point[2].x, block.point[2].y, map[y + block.point[2].y][x + block.point[2].x]);
+                printf(" 3 Block pos X: %d Y: %d -- value %c\n", block.point[3].x, block.point[3].y, map[y + block.point[3].y][x + block.point[3].x]);
                 lastPlace->x = x + block.point[0].x;
                 lastPlace->y = y + block.point[0].y;
                 return (1);
@@ -347,10 +352,10 @@ int     undo(t_block *block, char map[17][17], int x, int y, int mapMax)
             //char temp;
             printf("x: %d y: %d mapMax: %d\n", x , y, mapMax - 1);
 
-			printf("Map Points\n%d  %d\n", y + block->point[3].y,x + block->point[3].x);
-            printf("%d  %d\n", y + block->point[2].y,x + block->point[2].x);
-            printf("%d  %d\n", y + block->point[1].y,x + block->point[1].x);
-            printf("%d  %d\n---------------------\n", y + block->point[0].y,x + block->point[0].x);
+			printf("Map Points\n%d  %d\n",block->point[3].y,block->point[3].x);
+            printf("%d  %d\n",block->point[2].y,block->point[2].x);
+            printf("%d  %d\n",block->point[1].y,block->point[1].x);
+            printf("%d  %d\n---------------------\n",block->point[0].y,block->point[0].x);
 			printf("Map Values\n%c\n", map[y + block->point[0].y][x + block->point[0].x]);
             printf("%c\n", map[y + block->point[1].y][x + block->point[1].x]);
             printf("%c\n", map[y + block->point[2].y][x + block->point[2].x]);

@@ -15,6 +15,8 @@ typedef struct  s_block
                 t_point point[676];
                 int x_dim;
                 int y_dim;
+                int ox;
+                int oy;
 }               t_block;
 /*
     FILL_IT RULE SET

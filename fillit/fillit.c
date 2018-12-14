@@ -195,9 +195,11 @@ void  initMap(char map[17][17], int dim)
                         If a spot is not free the function is called again with a change in first the x position, then the y position.
                         Should not happen but if a spot just cannot befound a critical error is thrown.
 */
-int         checkMap(char map[17][17], t_block block, int mapSize, int l, t_point *lastPlace)
+int         checkMap(char map[17][17], t_block block, int mapSize, int l, t_point *lastPlace, int v)
 {
     int k = 0;
+    int ox = block.ox;
+    int oy = block.oy;
     int x;
     x = 0;
     int y; 
@@ -230,14 +232,14 @@ int         checkMap(char map[17][17], t_block block, int mapSize, int l, t_poin
                 // printf("%c\n", map[y + block.point[1].y][x + block.point[1].x]);
                 // printf("%c\n", map[y + block.point[2].y][x + block.point[2].x]);
                 // printf("%c\n------\n",map[y + block.point[3].y][x + block.point[3].x]);
-            if ((map[y + block.point[0].y][x + block.point[0].x] == '.')&& \
-                (map[y + block.point[1].y][x + block.point[1].x] == '.')&& \
-			    (map[y + block.point[2].y][x + block.point[2].x] == '.')&& \
-                (map[y + block.point[3].y][x + block.point[3].x] == '.')&& 
-                y + block.point[0].y <= mapSize && y + block.point[1].y <= mapSize \
-                && y + block.point[2].y <= mapSize && y + block.point[3].y <= mapSize \
-                && x + block.point[0].x <= mapSize && x + block.point[1].x <= mapSize \
-                && x + block.point[2].x <= mapSize && x + block.point[3].x <= mapSize)
+            if ((map[y + block.point[0].y + oy][x + block.point[0].x + ox] == '.')&& \
+                (map[y + block.point[1].y + oy][x + block.point[1].x + ox] == '.')&& \
+			    (map[y + block.point[2].y + oy][x + block.point[2].x + ox] == '.')&& \
+                (map[y + block.point[3].y + oy][x + block.point[3].x + ox] == '.')&& 
+                y + block.point[0].y + oy <= mapSize && y + block.point[1].y + oy <= mapSize \
+                && y + block.point[2].y + oy <= mapSize && y + block.point[3].y + oy <= mapSize \
+                && x + block.point[0].x + ox <= mapSize && x + block.point[1].x + ox <= mapSize \
+                && x + block.point[2].x + ox <= mapSize && x + block.point[3].x + ox <= mapSize)
             {
                 /*
                     May not work regarding specific blocks may need to consider dimension of block rather.
@@ -245,14 +247,16 @@ int         checkMap(char map[17][17], t_block block, int mapSize, int l, t_poin
 					   x = 0 , y = 0
 					   lastPlace.x  == 0 && lastplace.y == 0
 			    */ 
-
-                lastPlace->x = x + block.point[0].x;
-                lastPlace->y = y + block.point[0].y;
-
-                map[y + block.point[3].y][x + block.point[3].x] = lett[l];
-                map[y + block.point[2].y][x + block.point[2].x] = lett[l];
-                map[y + block.point[1].y][x + block.point[1].x] = lett[l];
-                map[y + block.point[0].y][x + block.point[0].x] = lett[l];
+                //if (lastPlace->x == x + block.point[0].x && lastPlace->y == y + block.point[0].y)
+            
+                lastPlace->x = x + block.point[0].x + ox;
+                lastPlace->y = y + block.point[0].y + oy;
+                if (!v){
+                map[y + block.point[3].y + oy][x + block.point[3].x + ox] = lett[l];
+                map[y + block.point[2].y + oy][x + block.point[2].x + ox] = lett[l];
+                map[y + block.point[1].y + oy][x + block.point[1].x + ox] = lett[l];
+                map[y + block.point[0].y + oy][x + block.point[0].x + ox] = lett[l];
+                }
                 // printf("Map Points\n%d  %d\n", y + block.point[3].y + oy,x + block.point[3].x + ox);
                 // printf("%d  %d\n", y + block.point[2].y,x + block.point[2].x);
                 // printf("%d  %d\n", y + block.point[1].y,x + block.point[1].x);
@@ -286,19 +290,95 @@ int         checkMap(char map[17][17], t_block block, int mapSize, int l, t_poin
     //     return (0);
     return (0);
 }
+
+
+int         checker(char map[17][17], t_block block, int mapSize, t_point *lastPlace, int i)
+{
+
+    int x;
+    x = 0;
+    int y; 
+    y = 0;
+    char *lett = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    mapSize -= 1;
+
+    while (y < mapSize + 1)
+    {
+        while (x < mapSize + 1)
+        {  
+                
+            if ((map[y + block.point[0].y][x + block.point[0].x] == lett[i])&& \
+                (map[y + block.point[1].y][x + block.point[1].x] == lett[i])&& \
+			    (map[y + block.point[2].y][x + block.point[2].x] == lett[i])&& \
+                (map[y + block.point[3].y][x + block.point[3].x] == lett[i])&& 
+                y + block.point[0].y <= mapSize && y + block.point[1].y <= mapSize \
+                && y + block.point[2].y <= mapSize && y + block.point[3].y <= mapSize \
+                && x + block.point[0].x <= mapSize && x + block.point[1].x <= mapSize \
+                && x + block.point[2].x <= mapSize && x + block.point[3].x <= mapSize)
+            {
+                lastPlace->x = x + block.point[0].x;
+                lastPlace->y = y + block.point[0].y;
+                return (1);
+            }
+           x++;
+        }
+        x = 0;
+        y++;
+    }
+    return (0);
+}
 /*
     prototype void redo(t_block block, int x, int y)
     Description: increases the x or y value of a block given an undo transformation.
 */
 void     redo(t_block *block, int x, int y)
 {  
-    block->point[0].x += x;
-    block->point[0].y += y;
-    block->point[1].x += x;
-    block->point[2].x += x;
-    block->point[2].y += y;
-    block->point[3].x += x;
-    block->point[3].y += y;
+    if( x > y)
+        block->ox += 1;
+    else
+    {
+        block->ox = 0;
+        block->oy += 1;
+    }
+}   
+
+int     undo(t_block *block, char map[17][17], int x, int y, int mapMax)
+{
+            //char temp;
+
+			printf("Map Points\n%d  %d\n", y + block->point[3].y,x + block->point[3].x);
+            printf("%d  %d\n", y + block->point[2].y,x + block->point[2].x);
+            printf("%d  %d\n", y + block->point[1].y,x + block->point[1].x);
+            printf("%d  %d\n---------------------\n", y + block->point[0].y,x + block->point[0].x);
+			printf("Map Values\n%c\n", map[y + block->point[0].y][x + block->point[0].x]);
+            printf("%c\n", map[y + block->point[1].y][x + block->point[1].x]);
+            printf("%c\n", map[y + block->point[2].y][x + block->point[2].x]);
+            printf("%c\n------\n",map[y + block->point[3].y][x + block->point[3].x]);
+
+   			map[y + block->point[3].y][x + block->point[3].x] = '.';
+            map[y + block->point[2].y][x + block->point[2].x] = '.';
+            map[y + block->point[1].y][x + block->point[1].x] = '.';
+            map[y][x] = '.';
+
+			//x == [B][B][B][B] <--- x == lastblock, 
+            x = (x - block->point[0].x) + block->point[3].x;
+            y = (y - block->point[0].y) + block->point[3].y;
+             printf("x: %d y: %d mapMax: %d\n", x , y, mapMax - 1);
+            //  read(1, &temp, 1);
+            if (x < mapMax - 1 && map[y][x + 1] == '.')
+            {
+				//Move block to the right
+                redo(block, 1, 0);
+            }
+            else if (y < mapMax - 1 && map[y + 1][x] == '.')
+            {
+				//Move block down
+                redo(block, 0, 1);   
+            }
+            else
+                return (0);
+        
+            return (1);
 }
 /*
     prototype void  tetriMap(char **map, t_block *blocks, int mapMax)
@@ -310,14 +390,16 @@ void    tetriMap(char map[17][17], t_block *blocks, int index, int mapMax, int i
 {    
 
 	int ret = 0;
+    int v = 0;
     int x = lastPlace.x;
     int y = lastPlace.y;
 
     printf("The value of the index: %d\n",index);
 
-    while ( i != 3) 
+    while ( i != index) 
     {
-        if ((ret = (checkMap(map, blocks[i], mapMax, i, &lastPlace))) > 0)
+        v = 0;
+        if ((ret = (checkMap(map, blocks[i], mapMax, i, &lastPlace, v))) > 0)
         {
             i++;
         }
@@ -328,37 +410,31 @@ void    tetriMap(char map[17][17], t_block *blocks, int index, int mapMax, int i
         }   
         else
         {
-			x = lastPlace.x;
-			y = lastPlace.y;
+            v = 1;
             i--;
-				printf("Map Points\n%d  %d\n", y + blocks[i].point[3].y,x + blocks[i].point[3].x);
-                printf("%d  %d\n", y + blocks[i].point[2].y,x + blocks[i].point[2].x);
-                printf("%d  %d\n", y + blocks[i].point[1].y,x + blocks[i].point[1].x);
-                printf("%d  %d\n---------------------\n", y + blocks[i].point[0].y,x + blocks[i].point[0].x);
-			    printf("Map Values\n%c\n", map[y + blocks[i].point[0].y][x + blocks[i].point[0].x]);
-                printf("%c\n", map[y + blocks[i].point[1].y][x + blocks[i].point[1].x]);
-                printf("%c\n", map[y + blocks[i].point[2].y][x + blocks[i].point[2].x]);
-                printf("%c\n------\n",map[y + blocks[i].point[3].y][x + blocks[i].point[3].x]);
-   			map[y + blocks[i].point[3].y][x + blocks[i].point[3].x] = '.';
-            map[y + blocks[i].point[2].y][x + blocks[i].point[2].x] = '.';
-            map[y + blocks[i].point[1].y][x + blocks[i].point[1].x] = '.';
-            map[y][x] = '.';
-
-				//x == [B][B][B][B] <--- x == lastblock, 
-            if (i < 0)
+            checker(map, blocks[i], mapMax, &lastPlace, i);
+            x = lastPlace.x;
+			y = lastPlace.y;
+            printf("i value: %d \n x p: %d y p: %d\n", i, x , y);
+            while(!undo(&blocks[i], map, x, y, mapMax))
             {
-                mapMax++;
-                i = 0;
-            }
-            else if (x < mapMax)
-            {
-				//Move block to the right
-                redo(&blocks[i], 1, 0);
-            }
-            else if (y < mapMax)
-            {
-				//Move block down
-                redo(&blocks[i], 0, 1);   
+                i--;
+                checker(map, blocks[i], mapMax, &lastPlace, i);
+                x = lastPlace.x;
+                y = lastPlace.y;
+                
+				//x == [B][B][B][B] <--- x == lastblock
+                printf("i value: %d \n x place: %d y place: %d\n", i, x , y); 
+                //x = (x - blocks[i + 1].point[0].x) + blocks[i + 1].point[3].x;
+                //y = (y - blocks[i + 1].point[0].y) + blocks[i + 1].point[3].y;
+                
+                if (i < 0)
+                {
+                    mapMax++;
+                    i = 0;
+                    break;
+                }
+ 
             }
             printMapPls(map,mapMax);
         }

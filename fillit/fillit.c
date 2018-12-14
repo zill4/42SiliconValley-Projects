@@ -301,7 +301,7 @@ int         checker(char map[17][17], t_block block, int mapSize, t_point *lastP
     y = 0;
     char *lett = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     mapSize -= 1;
-
+    printf("we are currently checking fabulous block #: %d, of letter: %c\n", i, lett[i]);
     while (y < mapSize + 1)
     {
         while (x < mapSize + 1)
@@ -345,6 +345,7 @@ void     redo(t_block *block, int x, int y)
 int     undo(t_block *block, char map[17][17], int x, int y, int mapMax)
 {
             //char temp;
+            printf("x: %d y: %d mapMax: %d\n", x , y, mapMax - 1);
 
 			printf("Map Points\n%d  %d\n", y + block->point[3].y,x + block->point[3].x);
             printf("%d  %d\n", y + block->point[2].y,x + block->point[2].x);
@@ -364,6 +365,7 @@ int     undo(t_block *block, char map[17][17], int x, int y, int mapMax)
             x = (x - block->point[0].x) + block->point[3].x;
             y = (y - block->point[0].y) + block->point[3].y;
              printf("x: %d y: %d mapMax: %d\n", x , y, mapMax - 1);
+             printf("ox: %d oy: %d\n", block->ox, block->oy);
             //  read(1, &temp, 1);
             if (x < mapMax - 1 && map[y][x + 1] == '.')
             {
@@ -412,6 +414,7 @@ void    tetriMap(char map[17][17], t_block *blocks, int index, int mapMax, int i
         {
             v = 1;
             i--;
+            printf("Finding Block %d\n", i);
             checker(map, blocks[i], mapMax, &lastPlace, i);
             x = lastPlace.x;
 			y = lastPlace.y;
@@ -434,7 +437,6 @@ void    tetriMap(char map[17][17], t_block *blocks, int index, int mapMax, int i
                     i = 0;
                     break;
                 }
- 
             }
             printMapPls(map,mapMax);
         }

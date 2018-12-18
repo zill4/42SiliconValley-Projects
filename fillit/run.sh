@@ -1,3 +1,1 @@
-gcc -Wall -Wextra -Werror -o go fillit.c ./libft/libft.a -I fillit.h
-./go test
-rm go
+gcc -Wall -Wextra -Werror -o fillit fillit.c ./libft/libft.a -I fillit.h

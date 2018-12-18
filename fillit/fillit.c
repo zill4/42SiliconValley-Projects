@@ -1,43 +1,54 @@
+
 #include "fillit.h"
 #include <fcntl.h>
 
-/*
-    Prototype: int parseTetri(t_block *b, int y, char* str)
-    Description: partseTetri, pareses a string for '.' && '#'.
-                If the '#' are found, they are recorded in t_block.x
-                && t_block.y position. A 0 is returned if the line is empty.
-                A -1 is returned if the format is bad. A 1 is returned if success.
-*/
-/* This is how the blocks ar gathered and made in the beginning of main */
-int parseTetri(t_block *blocks, int *i, int *y, char* str)
+void    initPoint(t_point *p)
 {
-    int x;
+    p->x = 0;
+    p->y = 0;
+}
 
-    x = 0;
-    if (str == NULL)
+int     checkFormat(t_block block)
+{
+    int d;
+    int i;
+    
+    i = 0;
+    d = 0;
+    while (i < 3)
     {
-        printf("There is nothing here!\n");
-        return (0);
+        d = block.point[i + 1].y - block.point[i].y;
+        if (d > 1 || d < -1)
+            return (0);
+        d = block.point[i + 1].x - block.point[i].x;
+        if (d > 1 || d < -1)
+            return (0);
+        i++;
     }
-    if (ft_strlen(str) % 4 != 0)
-        return (-1);
-    while (str[x])
+    return (1);
+}
+
+int     addBlockLine(t_block *block, char *line, int *count, int y)
+{
+    int i;
+
+    i = 0;
+    printf("checking length of line: %zu\n", ft_strlen(line));
+    printf("String: %s\n", line);
+    while(line[i])
     {
-        /* Check if '#' point is reached,
-            Record x position 0 - 3
-            Record y position from outside func.
-            i iterates to next block if multiple '#' points are found.
-        */
-        if (str[x] == '#')
+        if (line[i] == '#')
         {
-            blocks->point[*i].x = x;
-            blocks->point[*i].y = *y;
-            *i += 1;
+            block->point[*count].x = i;
+            block->point[*count].y = y;
+            *count += 1;
         }
-        else if (str[x] != '.')
+        else if (line[i] != '.' && line[i] != '#')
             return (-1);
-        x++;
+        i++;
     }
+    if (i != 4)
+        return (-1);
     return (1);
 }
 
@@ -79,7 +90,6 @@ int     checkDim(t_block *block)
         if (x_min < 0 || x_max > 3)
             return (0);
     }
-   // printf("XMax Dimemsion: %d XMIN Dimension: %d, YMax Dimension: %d, YMin Dimension: %d\n", x_max, x_min, y_max, y_min);
     /* normalize the points such that at least 1 is min 0, for simpler placing */
     if (x_min > 0)
     {
@@ -98,53 +108,7 @@ int     checkDim(t_block *block)
     return(1);
 }
 
-/*
-    prototype void printAll(t_point finalDim, int mapDim)
-    Description: printAll takes the maximum dimension of the map.,
-                and the worst case scenario 
-*/
-/* IM PRETTY SURE I DONT USE THIS */
-void    printAll(char map[17][17], int mapDim)
-{
-    t_point dim;
-    int x;
-    int y;
-    x = 0;
-    y = 0;
-    dim.x = 0;
-    dim.y = 0;
-    while ( y < mapDim)
-    {
-        while (x < mapDim)
-        {
-            if (map[y][x] != '.' && (y >= dim.y))
-                dim.y = y;
-            if (map[y][x] != '.' && (x >= dim.x))
-                dim.x = x;
-            
-            x++;
-        }
-        x = 0;
-        y++;
-    }
-    x = 0;
-    y = 0;
-    if ( dim.x >= dim.y )
-        dim.y = dim.x;
-    else
-        dim.x = dim.y;
-    while (y < dim.y + 1)
-    {
-        while (x < dim.x + 1)
-        {
-            ft_putchar(map[y][x]);
-            x++;
-        }
-        ft_putchar('\n');
-        x = 0;
-        y++;
-    }
-}
+
 /*   
     prototype void    printMapPls(map, sizeofmap)
     Description:    Will print the map for the given size.
@@ -330,13 +294,27 @@ void     redo(t_block *block, int x, int y)
     }
 }   
 
+void    undoOffset(t_block blocks[26], int index)
+{
+    int i;
+
+    i = 0;
+    while (i < index)
+    {
+        blocks[i].ox = 0;
+        blocks[i].oy = 0;
+        i++;
+    }
+}
+
 int     undo(t_block *block, char map[17][17], int x, int y, int mapMax)
 {
 
             x = (x - block->point[0].x) + block->point[3].x; //This is the farthest right position 
-            y = (y - block->point[0].y) + block->point[3].y;//basically checks if the block can be undo, 
+            y = (y - block->point[0].y) + block->point[3].y;//basically checks if the block can be undone, 
             //because it will either move to the right or down, if the map is too small
             //or if theere is another block in the way it should not undo.
+            printMapPls(map,mapMax); //this prints the map.
             if (x < mapMax - 1 && map[y][x + 1] == '.')
                 redo(block, 1, 0); //redo is the new method of shifting a block right or down
             else if (y < mapMax - 1 && map[y + 1][x] == '.')
@@ -366,37 +344,33 @@ void    tetriMap(char map[17][17], t_block *blocks, int index, int mapMax, int i
         v = 0;
         if ((ret = (checkMap(map, blocks[i], mapMax, i, &lastPlace, v))) > 0)
             i++;
-		else if (ret == -1 )
+		else if (ret == -1)
             mapMax++; //checkMap will return -1 if the block its trying to place is to big for the map.
         else //This else triggers if we could not place the point easily in checkMap
         {
-            v = 1; //We set V to 1 as we are now evaulating where can place the next block.
-            i--; //We move down with the i value as to undo all points up to the last point.
-            //Once the last point is reach we move forward by pushing the fist point to the right or down if we can.
-            //This is not a perfect method because we need to keep the first blocks in our stack i.e. ABC further to the left
-            //And up as possible with blocks DEF etc. should following more towards the bottom right. 
-            //To get this result a edit must be made in this algorthim.
-            //Instead of moving the first block to the right first, we should move the last placed block first. 
-            //Try to place after that.
-            checker(map, blocks[i], mapMax, &lastPlace, i); //Checker checks if we can place a block and assigns those coordinates to lastplace.
-            x = lastPlace.x;
-			y = lastPlace.y;
-            while(!undo(&blocks[i], map, x, y, mapMax)) //While undo is returning a negative result, it undos each placement.
+            i--;
+            v = 1;
+            checker(map, blocks[i], mapMax, &lastPlace, i);
+            x = lastPlace.x; //undo removes points based on lastplace.
+            y = lastPlace.y;
+            while (!undo(&blocks[i], map, x, y, mapMax))
             {
-                //changing this algorthim could fix the code if instead of undoing while negative it just undid until something moved.
                 v = 1;
                 i--;
-                checker(map, blocks[i], mapMax, &lastPlace, i);
-                x = lastPlace.x; //undo removes points based on lastplace.
-                y = lastPlace.y;
-                if (i < 0) //i will eventually reach a - number this is how we know we got to the endo of the blocks
+                if (i < 0) 
                 {
-                    mapMax++; //mapmax increases because we kepting undoing and were never able to place.
+                    mapMax++;
+                    undoOffset(blocks, index);
                     i = 0;
                     break;
                 }
+                if (checker(map, blocks[i], mapMax, &lastPlace, i)) {
+                x = lastPlace.x;
+                y = lastPlace.y;
+                }
+                
             }
-            printMapPls(map,mapMax); //this prints the map.
+            //printMapPls(map,mapMax); //this prints the map.
         }
     }
 }
@@ -404,7 +378,6 @@ void    tetriMap(char map[17][17], t_block *blocks, int index, int mapMax, int i
 
 /*
     prototype void  printMap(int index)
-	3
 
     Description: printMap, takes the index of the counted blocks and
                 creates the maximum map size for those blocks.
@@ -424,124 +397,84 @@ void    printMap(int index, t_block *blocks)
     dimPrint.x = 0; //init dimprint
     dimPrint.y = 0; //init dimprint
     i = 0; //init i
-    
-    /*  This whole while loop basically checks for the maximum dimensions by doing some arguably incorrect matrix math */
-    /*  Have not tried yet, but it is probably not necessary */
-    while (i < index)
-    {
-        /* This set of if statements finds space taken of tetris blocks */
-        if (dimPrint.x <= dimPrint.y)
-        {
-            dimPrint.x += blocks[i].x_dim;
-            if (blocks[i].y_dim > dimPrint.y || dimPrint.y== 0)
-                dimPrint.y = blocks[i].y_dim;
-        }
-        else
-        {
-            dimPrint.y += blocks[i].y_dim;
-            if (blocks[i].x_dim > dimPrint.x || dimPrint.x == 0)
-                dimPrint.x = blocks[i].x_dim;
 
-        }
-        i++;
-    }
-    if (dimPrint.x > dimPrint.y)
-        dimMap = dimPrint.x;
-    else
-        dimMap = dimPrint.y;
     /* This marks the end of the uncessary thing above */
 
     i = 0;
+    printf("Index: %d", index);
+
     initMap(map, 17); //init the map, with a bunch of '.'s 
-    tetriMap(map,blocks, index, 2, i, lastpoint); //This is the thing we have been working for the past couple weeks.
+        tetriMap(map,blocks, index, 2, i, lastpoint); //This is the thing we have been working for the past couple weeks.
 
 }
-/*
-    Main: The beginning of the program.
-    0. 
-*/
 
-int main()
+int     readTetri(int fileDesc, t_block blocks[26])
 {
-    /* Variables */ 
-    int fileDesc;   // The fil descriptor.
-    char *temp;     // String for reading lines with Get Next Line.
-    int y;          // y keeps track of the y value per each block read.
-    int index;      // index is the number of blocks read.
-    int i = 0;      // i is a temporary number for tracking count of points in a block.
-    int ret;        // ret is the returned valued saved as an integer. used for checking errors.
-    int d_n = 0;    // d_n was a number for quickly checking if a double \n character was encountered.
-    ret = 1;        // ret is initialized to a positive to start.
+    char    *line;
+    int     index;
+    int     count;
+    int     spaces;
+    int     y;
+
     y = 0;
     index = 0;
-    
-    t_block blocks[26];   //Blocks is the storage location for every block in this program. it is initialized on the stack.
-    /* Open file for testing */
-   fileDesc = open("test", O_RDONLY);   
-    /* Check file if file is valid. */
-    if (fileDesc <= 0) 
+    count = 0;
+    spaces = 0;
+    while (get_next_line(fileDesc,&line))
     {
-            printf("The file provided is invalid\n");
-            return (0);
-    } 
-    /* Print the file iteratively */
-    while (get_next_line(fileDesc,&temp))
-    {
-        /* Checks if the the string is of line size 4 for a block */
-        if (ft_strlen(temp) == 4)
+        if(line == NULL && spaces % 5 != 0)
+            return (-1);
+        if(addBlockLine(&blocks[index], line, &count, y) > 0)
         {
-            /*  essentially if y == 4, increase index to next block*/
-            if (y % 4 == 0 && y != 0)
-            {
-                i = 0;
+            y++;
+            if (y % 4 == 0)
+            {   
+                if (count > 4)
+                    return (0);
+                count = 0;
                 y = 0;
+               // if (checkFormat(blocks[index]) <= 0)
+                 //   return (0);
                 index++;
             }
-            /*  parseTetri reads the line addes the points found and returns -1 if it finds an error in format. */
-            ret = parseTetri(&blocks[index], &i, &y, temp);
-            /* Basically checking the result of our parsed read */
-            if (ret < 0)
-            {
-                printf("Bad news bears this is busted! \n");
-                return (0);
-            }
-            /*  This only occurs if its a new line or at End Of File */
-            if (ret == 0)
-                break;
-            printf("Done %d\n",y);
-            /* since each line represents a movment in the y axis increment y */
-            y++;
-            /* we saw no double new lines so this is zero */
-            d_n = 0;
         }
-        else if(ft_strlen(temp) == 0 && d_n == 0) //this is a really dumb way to check for a new line.
-        {
-            printf("New Line\n");
-            d_n = 1;
-        }
-        else //This only occurs if d_n = 1, this happens with 
-            return (0);
+        spaces++;
+    }
+    return (index);
+}
 
-    }
-    if (index == 0 && d_n == 1) //so this is only one block and the file ended with a \n. this is bad format.
+int main(int argc, char** argv)
+{
+    /* Variables */ 
+    int fileDesc; 
+    int y;
+    int index;
+    t_block blocks[26];
+
+    fileDesc = 0;
+    y = 0;
+    index = 0;
+
+    if (argc != 2)
     {
-        printf("Bad format\n");
-        return (0);
+        ft_putstr("Usage: fillit input file\n");
+        return (1);
     }
-    else if (index == 0 && d_n == 0) //this would be one block with no \n. if block count > 1 a \n at the end is required
-        printf("Good format\n");
-   
-    printf("index: %d\n", index);
-    index++;
-    for (int k = 0; k < index; k++) //This can be changed to a while loop.
+    if((index = readTetri(open(argv[1], O_RDONLY), blocks)) == 0 )
     {
-        if (!checkDim(&blocks[k])) //This checks the dimensions of each block, which may be redundant now.
+        ft_putstr("error\n");
+        return (1);
+    }
+
+    for (int k = 0; k < index; k++)
+    {
+        if (!checkDim(&blocks[k]))
         {
             printf("Error Bad formatting! Shame on you!\n");
             return (0);
         }
     }
-    close(fileDesc); //closes the file read.
-    printMap(index, blocks); //This moves into placing things on the map, we send the index and blocks to it.
+    close(fileDesc);
+    printMap(index, blocks);
     return (0);
 }

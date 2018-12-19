@@ -163,16 +163,6 @@ int         checkMap(char map[17][17], t_block block, int mapSize, int l, t_poin
     char *lett = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     mapSize -= 1;
-    if (block.point[0].y > mapSize || \
-    block.point[0].x > mapSize || \
-    block.point[1].y > mapSize || \
-    block.point[1].x > mapSize || \
-	block.point[2].y > mapSize || \
-    block.point[2].x > mapSize || \
-    block.point[3].y > mapSize || \
-    block.point[3].x > mapSize)
-		return (-1);
-    
     while (y < mapSize + 1)
     {
         while (x < mapSize + 1)
@@ -284,42 +274,30 @@ int     undo(t_block *block, char map[17][17], int x, int y, int mapMax)
             return (1);
 }
 
-int    tetriMap(char map[17][17], t_block *blocks, int index, int mapMax, int i, t_point lastPlace)
-{    
-	int ret = 0; 
-    int v = 0;
-    int x = lastPlace.x;
-    int y = lastPlace.y;
 
-    while ( i != index) 
+int    tetriMap(char map[17][17], t_block *blocks, int index, int mapMax, t_point lp)
+{
+    int i;
+
+    i = 0;
+    while (i != index) 
     {
-        //v = 0;
-        if ((ret = (checkMap(map, blocks[i], mapMax, i, &lastPlace))) > 0)
+        if (checkMap(map, blocks[i], mapMax, i, &lp) > 0)
             i++;
-		else if (ret == -1)
-            mapMax++;
         else
         {
             i--;
-            //v = 1;
-            checker(map, blocks[i], mapMax, &lastPlace, i);
-            x = lastPlace.x;
-            y = lastPlace.y;
-            while (!undo(&blocks[i], map, x, y, mapMax))
+            checker(map, blocks[i], mapMax, &lp, i);
+            while (!undo(&blocks[i], map, lp.x, lp.y, mapMax))
             {
-                v = 1;
-                i--;
-                if (i < 0) 
+                if (i-- < 0) 
                 {
                     mapMax++;
                     undoOffset(blocks, index);
                     i = 0;
                     break;
                 }
-                if (checker(map, blocks[i], mapMax, &lastPlace, i)) {
-                x = lastPlace.x;
-                y = lastPlace.y;
-                }
+                checker(map, blocks[i], mapMax, &lp, i);
             }
         }
     }
@@ -328,7 +306,7 @@ int    tetriMap(char map[17][17], t_block *blocks, int index, int mapMax, int i,
 
 void    printMap(int index, t_block *blocks)
 {
-    int i;
+
     int dimMap;
     char map[17][17];
 	t_point lastpoint;
@@ -338,10 +316,8 @@ void    printMap(int index, t_block *blocks)
     dimMap = 2;
     dimPrint.x = 0;
     dimPrint.y = 0;
-    i = 0;
-    i = 0;
     initMap(map, 17); 
-    dimMap = tetriMap(map,blocks, index, 2, i, lastpoint); 
+    dimMap = tetriMap(map,blocks, index, 2, lastpoint); 
     printMapPls(map,dimMap);
 }
 

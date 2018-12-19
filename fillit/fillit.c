@@ -193,6 +193,8 @@ int     checkMap(char map[17][17], t_block b, int mapSize, int l, t_point *lastP
             {
                 setLastPlace(b, lastPlace, x, y);
                 placePoints(map, b, x, y, l);
+                printMapPls(map,mapSize);
+                printf("---------\n");
                 return (1);
             }
         }
@@ -230,54 +232,45 @@ int     checker(char map[17][17], t_block b, int mapSize, t_point *lastPlace, in
 
 void     redo(t_block *block, int x, int y)
 {  
-    if( x > y)
-        block->ox += 1;
-    else
-    {
+    if (x == 0)
         block->ox = 0;
+    if (y == 1)
         block->oy += 1;
-    }
+    if (x == 1)
+        block->ox += 1;
 }  
 
-void    undoOffset(t_block blocks[26], int index)
+void    undoOffset(t_block *block)
 {
-    int i;
-
-    i = 0;
-    while (i < index)
-    {
-        blocks[i].ox = 0;
-        blocks[i].oy = 0;
-        i++;
-    }
+        block->ox = 0;
+        block->oy = 0;
 }
 
 int     undo(t_block *block, char map[17][17], int x, int y, int mapMax)
 {
-
             x = (x - block->point[0].x) + block->point[3].x;
             y = (y - block->point[0].y) + block->point[3].y;
             if (x < mapMax - 1 && map[y][x + 1] == '.')
                 redo(block, 1, 0);
-            else if (y < mapMax - 1 && map[y + 1][x] == '.')
+            else if (y < mapMax && map[y + 1][x] == '.')
                 redo(block, 0, 1);   
             else
                 return (0);
-        
+            
             return (1);
 }
 
 void redux(int *i, int *mapMax, t_block *blocks, int index)
 {
     *mapMax += 1;
-    undoOffset(blocks, index);
+    undoOffset(&blocks[*i]);
     *i = 0;
 }
 
 int    tetriMap(char map[17][17], t_block *blocks, int index, int mapMax, t_point lp)
 {
     int i;
-
+    
     i = 0;
     while (i != index) 
     {
@@ -289,14 +282,16 @@ int    tetriMap(char map[17][17], t_block *blocks, int index, int mapMax, t_poin
             checker(map, blocks[i], mapMax, &lp, i);
             while (!undo(&blocks[i], map, lp.x, lp.y, mapMax))
             {
-                if (i-- < 0) 
+                if (i < 0) 
                 {
                     redux(&i, &mapMax, blocks, index);
                     break;
                 }
                 checker(map, blocks[i], mapMax, &lp, i);
+                i--;
             }
         }
+
     }
     return(mapMax);
 }

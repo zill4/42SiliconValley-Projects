@@ -1,5 +1,4 @@
 # 42_projects
-42_projects
 
 42_Projects is a collection of the work school work done at 42 Silicon Valley. Everytime I work on a new project,
 I will upload my progress here first, before submitting to the local repository at 42.

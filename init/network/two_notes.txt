@@ -1,0 +1,20 @@
+2. Identify and display the Ethernet interface characteristics:
+	(a) Identify broadcast address
+	(b) Identify all IP addresses which are part of the same subnet
+
+what is a subnet?
+	A segment of a larger IP network that is used to subdivide large networks
+	into smaller more effcient ones.
+
+IP addresses are divided into two fields:
+	(a) Network Prefix
+	(b) Host ID
+	Ex - Net Pre.Net Pre.Subnet ID.Host ID
+				172.16.2.15
+				N.N.S.H
+	Given network interface machines
+	Ex - en0 after running ifconfig
+	target inet: which is the IP address in the address family of the machine en0.
+	ifconfig <target machine> | grep <address_family> | cut -d "delimeter" -f <field number>
+	ifconfig	en0	| grep "inet" |	cut -d " "	-f 2
+	

@@ -1,0 +1,7 @@
+# Q: Identify and display the Ethernet interface characteristics
+#  (a): Identify broadcast address
+#  (b): Identify all IP addresses which are part of the same subnet
+ifconfig en0 | grep 'inet' | cut -d ' ' -f 2
+# 0: ifconfig en0 grabs the network interface of the given en0 machine.
+# 1: grep 'inet' grabs specifically the brodcast address within the subnet.
+# 2: cut -d ' ' -f 2, trims all ' 's and grabs the 2nd element; the address.

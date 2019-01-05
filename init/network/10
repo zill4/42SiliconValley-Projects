@@ -1,0 +1,4 @@
+# Deduction : Identify the network devices between your computer and the slash16.org domain
+It is nat-1
+
+# traceroute slash16.org

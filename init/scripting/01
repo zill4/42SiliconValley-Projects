@@ -1,4 +1,16 @@
-# Write a script which displays only the login, UID and Path of each entry of the /etc/passwd file
-sudo cat /etc/passwd | awk -F  ":" '{print $1 "   " $3 "   " $6}' | column -t
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    01                                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/01/06 14:42:59 by jcrisp            #+#    #+#              #
+#    Updated: 2019/01/06 15:12:13 by jcrisp           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
 
-# column -t will arrange it nicely
+# Q: Write a script which displays only the login, UID and Path of each entry of the /etc/passwd file
+sudo cat /etc/passwd | awk -F  ":" '{print $1 "   " $3 "   " $6}' | column -t
+# 0: print the 1st 3rd and 6th columns of /etc/passwd
+# 1: column, colunate lists, -t determines the number of columns the input contains and create a table.

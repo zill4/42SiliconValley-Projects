@@ -1,4 +1,16 @@
-# Q:Use the output of the previous command to find the name and IP address of the
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    11                                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/01/06 15:47:27 by jcrisp            #+#    #+#              #
+#    Updated: 2019/01/06 15:47:28 by jcrisp           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+# Q: Use the output of the previous command to find the name and IP address of the
 # device that makes the link between you (local network) and the outside world
 echo "nat (10.90.1.11)";
 # 0: Nat is Netowrk Address Translation seen after calling traceroute.

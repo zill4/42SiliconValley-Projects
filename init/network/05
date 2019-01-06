@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    05                                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/01/06 15:45:10 by jcrisp            #+#    #+#              #
+#    Updated: 2019/01/06 15:45:11 by jcrisp           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 # Q:Identify the IP address of teh DNS that responds to the following url: slash16.org
 dig slash16.org | grep SERVER | awk '{print $3}' | awk -F '[()]' '{print $2}'
 # 01: dig queries the Domain Name System (The phonebook of the internet) for slash16.org

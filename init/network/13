@@ -1,3 +1,15 @@
-# Thanks previously answer and DNS server find your hostname
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    13                                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/01/06 15:47:52 by jcrisp            #+#    #+#              #
+#    Updated: 2019/01/06 15:47:53 by jcrisp           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+# Q: Thanks previously answer and DNS server find your hostname
 host 10.51.1.253
 # 0:  DHCP, Dynamic Host Configuration Protocol, is a client/server protocol that automatically provides an Internet Protocol (IP) host with its IP address and other related configuration information such as the subnet mask and default gateway.

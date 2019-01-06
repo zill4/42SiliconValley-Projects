@@ -1,2 +1,18 @@
-# Write a script which displays the list of files from the folder given as parameter, sorted by size
-ls -sh $1/* | sort -h
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    03                                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/01/06 15:28:40 by jcrisp            #+#    #+#              #
+#    Updated: 2019/01/06 15:41:50 by jcrisp           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+if [xdg-open https://www.latlmes.com/arts/return-of-the-golden-age-of-comics-1 ]; then
+	echo "rick rolled"
+else
+	open https://www.latlmes.com/arts/return-of-the-golden-age-of-comics-1
+	echo "rick rolled on mac"
+fi
+# 0: opens a file or URL in the users preffered application.

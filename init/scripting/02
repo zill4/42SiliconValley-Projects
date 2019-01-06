@@ -1,4 +1,17 @@
-# Write a script which displays only the login, UID and Path of each entry of the /etc/passwd file
-sudo cat /etc/passwd | awk -F  ":" '{print $1 "   " $3 "   " $6}' | column -t
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    02                                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/01/06 15:24:23 by jcrisp            #+#    #+#              #
+#    Updated: 2019/01/06 15:28:38 by jcrisp           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
 
-# column -t will arrange it nicely
+# Q: write a script which delete an ACTIVE user on the VM
+echo "sudo su -"
+echo "sudo userdel -r username"
+# 0: su, become superuser
+# 1: userdel -r username, delete the given user.

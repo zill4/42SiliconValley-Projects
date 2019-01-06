@@ -10,7 +10,6 @@
 #                                                                              #
 # **************************************************************************** #
 
-# Find the provider of slash16.org
+# Q:Find the provider of slash16.org
 nslookup slash16.org | grep
-
-# we need to find the authoritative DNS servers. We can find it in the Name Server recor
+# 0: nslookup searchs the DNS directory for slash16.org

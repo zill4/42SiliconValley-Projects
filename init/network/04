@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    04                                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/01/06 15:45:00 by jcrisp            #+#    #+#              #
+#    Updated: 2019/01/06 15:45:01 by jcrisp           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 # Q: Identify the default gateway in the routing table
 netstat -nr | grep default | head -1 | awk '{print $2}'
 # 0: netstat -nr shows the network addresses and their routing tables. 

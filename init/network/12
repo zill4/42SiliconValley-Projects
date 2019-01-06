@@ -1,3 +1,15 @@
-# Check that the server with the 10.51.1.253 IP address is reachable from your computer
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    12                                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/01/06 15:47:33 by jcrisp            #+#    #+#              #
+#    Updated: 2019/01/06 15:47:37 by jcrisp           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+# Q: Check that the server with the 10.51.1.253 IP address is reachable from your computer
 ping 10.51.1.253
 # 0: simply ping the address

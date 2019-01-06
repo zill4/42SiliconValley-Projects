@@ -1,3 +1,15 @@
-# Deduction : Identify the network devices between your computer and the slash16.org domain
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    10                                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/01/06 15:45:55 by jcrisp            #+#    #+#              #
+#    Updated: 2019/01/06 15:45:59 by jcrisp           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+# Q: Identify the network devices between your computer and the slash16.org domain
 traceroute slash16.org
 # 0: traceroute traces the route to a host for the given slash16.org, essentially how many hops till slash16.org is reached.

@@ -1,6 +1,0 @@
-# Q:Identify the IP address of teh DNS that responds to the following url: slash16.org
-dig slash16.org | grep SERVER | awk '{print $3}' | awk -F '[()]' '{print $2}'
-# dig queries the Domain Name System (The phonebook of the internet) for slash16.org
-# grep SERVER, grabs the ipv4 address returned by dig in the Server field
-# awk '{print $3}', 
-# awk -F '[()]' '{print $2}'

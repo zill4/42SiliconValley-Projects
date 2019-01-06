@@ -1,4 +1,0 @@
-# Q: Get the list of network interfaces of the machine without displaying any 
-# detail for these interfaces. Only the list of names.
-ifconfig -l
-# 0: ifconfig -l displays a list of all networks on with the network interface.

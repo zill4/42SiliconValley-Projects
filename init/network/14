@@ -1,0 +1,3 @@
+# Q: What file contains the local DNS entries?
+less /etc/hosts
+# 0: /etc/hosts contains local DNS Entries

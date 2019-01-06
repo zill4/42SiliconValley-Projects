@@ -1,0 +1,3 @@
+# Find the external IP of 42.fr
+nslookup 42.fr
+# 0: nslookup 42.fr, simply query 42.fr ins nslookup

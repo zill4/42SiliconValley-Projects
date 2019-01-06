@@ -1,0 +1,16 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    08                                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/01/04 21:24:06 by jcrisp            #+#    #+#              #
+#    Updated: 2019/01/04 21:24:10 by jcrisp           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+# Find the provider of slash16.org
+nslookup slash16.org | grep
+
+# we need to find the authoritative DNS servers. We can find it in the Name Server recor

@@ -1,0 +1,3 @@
+# Deduction : Identify the network devices between your computer and the slash16.org domain
+traceroute slash16.org
+# 0: traceroute traces the route to a host for the given slash16.org, essentially how many hops till slash16.org is reached.

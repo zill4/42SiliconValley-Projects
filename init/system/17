@@ -1,0 +1,17 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    17                                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/01/06 13:20:02 by jcrisp            #+#    #+#              #
+#    Updated: 2019/01/06 13:55:12 by jcrisp           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+# Q: Find the commad that allows you to connect via ssh on the V.M. (In parallel with the graphic session)
+ip addr show
+echo "ssh 127.0.0.1 connects to your current machine"
+# Description: VirtualBox creates a private network (10.0.2.x) which will be connected to the host network using NAT. 
+# Source: https://unix.stackexchange.com/questions/145997/trying-to-ssh-to-local-vm-ubuntu-with-putty

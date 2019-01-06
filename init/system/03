@@ -1,0 +1,17 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    03                                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/01/06 12:10:54 by jcrisp            #+#    #+#              #
+#    Updated: 2019/01/06 12:10:55 by jcrisp           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+# Q: What file has to be modified to make it permanent?
+echo "/etc/hostname must be changed"
+cat /etc/hostname
+# 0: The hostname lives in this file.
+# 1: The current contents of that file.

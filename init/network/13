@@ -1,0 +1,3 @@
+# Thanks previously answer and DNS server find your hostname
+host 10.51.1.253
+# 0:  DHCP, Dynamic Host Configuration Protocol, is a client/server protocol that automatically provides an Internet Protocol (IP) host with its IP address and other related configuration information such as the subnet mask and default gateway.

@@ -1,0 +1,16 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    12                                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/01/06 12:32:08 by jcrisp            #+#    #+#              #
+#    Updated: 2019/01/06 12:35:01 by jcrisp           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+# Q: Figure out the exact size of each folder of /var
+sudo du -sh /var/*
+# 0: sudo to acess du, estimate file space usage.
+# 1: -s grabs a summary of the grand total, -h puts it in "Human-readable" like the last question.

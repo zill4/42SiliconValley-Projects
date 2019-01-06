@@ -1,0 +1,16 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    20                                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/01/06 14:11:08 by jcrisp            #+#    #+#              #
+#    Updated: 2019/01/06 14:16:11 by jcrisp           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+# Q: List all existing users on the VM
+awk -F: '{print $1}' /etc/passwd
+# 0: awk -F prints the first collumn of the output.
+# 1: /etc/passwd contains a list of all EXISTING users. 

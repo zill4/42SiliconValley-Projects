@@ -1,0 +1,16 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    16                                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/01/06 13:16:51 by jcrisp            #+#    #+#              #
+#    Updated: 2019/01/06 13:21:45 by jcrisp           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+# Q:Find the service which makes it possible to run specific tasks following a regular schedule
+cron
+# 0: cron, daemon to execute scheduled commands.
+# 1: daemon, A daemon is a type of program on Unix-like operating systems that runs unobtrusively in the background, rather than under the direct control of a user.

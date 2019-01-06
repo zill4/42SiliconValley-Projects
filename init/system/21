@@ -1,0 +1,21 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    21                                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/01/06 14:16:15 by jcrisp            #+#    #+#              #
+#    Updated: 2019/01/06 14:25:53 by jcrisp           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+Q: List all real users on the VM
+grep -E '^UID_MIN|^UID_MAX' /etc/login.defs
+getent passwd {1000..60000}
+# 0: Each user has a ID call UID, automatically selected from /etc/login.defs 
+# This depends on UID_MIN and UID_MAX values.
+# 1: getent get entries from administrative database
+# 2: passwd implies user list
+# 3: {UID_MIN..UID_MAX}, returns all real aka normal users.
+# Source: https://linuxize.com/post/how-to-list-users-in-linux/

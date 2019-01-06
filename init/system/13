@@ -1,0 +1,18 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    13                                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/01/06 12:35:10 by jcrisp            #+#    #+#              #
+#    Updated: 2019/01/06 12:42:55 by jcrisp           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+# Q: Name the command that find currently running processes
+ps -aux | less
+# 0: ps reports a snapshot of the current processes.
+# 1: -a Select all processes except both session leaders, and processes not associated with a terminal.
+# 2: -u Slect the processes username or ID is in the userlist.
+# 3: -x include processes which do not have a controlling terminal, while displaying other options.

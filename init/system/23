@@ -1,0 +1,17 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    23                                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/01/06 14:31:35 by jcrisp            #+#    #+#              #
+#    Updated: 2019/01/06 14:36:40 by jcrisp           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+# Q: Explain how connect yourself as new user.
+echo 'Login via ssh to desired ip: 127.0.0.1 is current addr, but can be any desired system'
+echo 'Check ips via: ip addr show'
+echo 'To login: ssh username@127.0.0.1'
+# 0: man ssh

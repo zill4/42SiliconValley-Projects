@@ -1,0 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    08                                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/01/06 12:27:05 by jcrisp            #+#    #+#              #
+#    Updated: 2019/01/06 12:28:09 by jcrisp           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+# Q: What file contains the RSA keys that are authorized to connect via SSH?
+cat /etc/ssh/sshd_config
+# 0: source - https://www.ssh.com/ssh/authorized_keys/ 

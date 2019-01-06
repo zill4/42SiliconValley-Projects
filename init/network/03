@@ -1,0 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    03                                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/01/05 22:01:43 by jcrisp            #+#    #+#              #
+#    Updated: 2019/01/05 22:01:45 by jcrisp           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+# Q: Identify the MAC address of the Wi-Fi card
+networksetup -getmacaddress Wi-Fi
+# 0: networksetup -getmacaddress Wi-Fi, get mac address of wifi card from networksetup

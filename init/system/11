@@ -1,0 +1,4 @@
+# Q: Name the command that displays the available space left on the system?
+df -h
+# 0: df displays free disk space
+# 1: -h displays in "Human-readable" output, i.e. Byte, Kilobyte, MegaByte etc.

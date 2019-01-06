@@ -1,0 +1,16 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    14                                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/01/06 13:09:00 by jcrisp            #+#    #+#              #
+#    Updated: 2019/01/06 13:11:38 by jcrisp           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+# Q: Run the 'tail -f /var/log/syslog' command in background
+sudo tail -f /var/log/syslog &
+# 0: tail output the last part of files, output appended data as the file grows;
+# 1: Syslog is a standard logging facility. It collects messages of various programms and services including the kernel and stores them.

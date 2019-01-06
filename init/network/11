@@ -1,0 +1,4 @@
+# Q:Use the output of the previous command to find the name and IP address of the
+# device that makes the link between you (local network) and the outside world
+echo "nat (10.90.1.11)";
+# 0: Nat is Netowrk Address Translation seen after calling traceroute.

@@ -1,0 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    05                                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/01/06 12:17:16 by jcrisp            #+#    #+#              #
+#    Updated: 2019/01/06 12:17:22 by jcrisp           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+# Q: Name the command that determines the state of the SSH service.
+sudo service ssh status
+# 0: sudo alows for the retrieval of the ssh service information and returns the status. 

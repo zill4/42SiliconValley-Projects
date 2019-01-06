@@ -1,0 +1,18 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    15                                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/01/06 13:11:48 by jcrisp            #+#    #+#              #
+#    Updated: 2019/01/06 13:15:53 by jcrisp           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+# Q: Find the command that kills the background command’s process
+sudo kill -KILL $(jobs -p)
+# 0: send a signal to a process 
+# 1: -KILL cannot be blocked
+# 2: of jobs: displaying status of jobs in teh current session
+# 3: -p dispalys only the process ID of the process group leader of the jobs. 

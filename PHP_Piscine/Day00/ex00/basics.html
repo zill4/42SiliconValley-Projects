@@ -1,0 +1,65 @@
+<!-- *********************************************************************** -->
+<!--                                                                         -->
+<!--                                                      :::      ::::::::  -->
+<!-- basics.html                                        :+:      :+:    :+:  -->
+<!--                                                  +:+ +:+         +:+    -->
+<!-- By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+       -->
+<!--                                              +#+#+#+#+#+   +#+          -->
+<!-- Created: 2019/01/07 21:00:54 by jcrisp            #+#    #+#            -->
+<!-- Updated: 2019/01/08 11:31:43 by jcrisp           ###   ########.fr      -->
+<!--                                                                         -->
+<!-- *********************************************************************** -->
+
+<html>
+	<head>
+		<style>
+			body {
+				background-color: pink;
+			}
+			#center_title{
+				font-size: 400%;
+				color: white;
+				text-align: center;
+			}
+			#image{
+				
+				width: 100%;
+			}
+			.sign{
+				font-style: italic;
+				font-family: monospace;
+				text-align: right;
+			}
+			.column {
+				float: left;
+				width: 30%;
+				height: 30%;
+				padding: 5px;
+			}
+			.row::after{
+				content: "";
+				clear: both;
+				display: table;
+			}
+		</style>
+		<title>Basics</title>
+	</head>
+	<body>
+		<h1 id="center_title">$The Title$</h1>
+		<div class="row">
+			<div class="column">
+			<img id="image" src="http://chinascoop.net/wp-content/uploads/2016/05/Screen-Shot-2016-05-22-at-3.57.20-PM-810x450.png">
+			<a href="https://world.taobao.com/">Taobao.com</a>
+			</div>
+			<div class="column">
+			<img id="image" src="https://images-na.ssl-images-amazon.com/images/I/A1Vz384pMeL.png">
+			<a href="https://www.amazon.com/">Amazon.com</a>
+			</div>
+		</div>
+		<hr>
+		<div class="sign">
+			<p>© jcrisp 2019 </p>
+		</div>
+	</body>
+</html>
+

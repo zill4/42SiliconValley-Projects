@@ -14,7 +14,7 @@ typedef struct s_point
 typedef struct s_map
 {
     t_point **map;
-    int dimensions; //the overall dimensions of the map.
+    t_point dimensions; //the overall dimensions of the map.
 }               t_map;
 
 #endif

@@ -61,8 +61,17 @@ int main(int argc, char **argv)
     fd = open(argv[1], O_RDONLY);
     // Get dimensions
     t_point dim = getDimensions(fd);
+    // Close and reopen file for map read.
+    close(fd);
+    fd = open(argv[1], O_RDONLY);
+    //Malloc map_size
+    t_map *map;
+        //Set map dimensions;
+    map->dimensions.x = dim.x;
+    map->dimensions.y = dim.y;
+    map->map = (t_point)malloc(sizof(t_point)*dim.x);
     // print dimensions
-      printf("\nDimensions X: %d Y: %d \n", dim.x, dim.y);
+    printf("\nDimensions X: %d Y: %d \n", dim.x, dim.y);
     /* testing inputs */
     void *mlx_ptr;
 	void *win_ptr;

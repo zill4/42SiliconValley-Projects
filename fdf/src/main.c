@@ -12,6 +12,22 @@ void    draw_grid(void* mlx_ptr, void *win_ptr, int grid)
         }
     }
 }
+void    allocMap(t_map *map)
+{
+    int x = map->dimensions->x;
+    int y = map->dimensions->y;
+    int i;
+    
+    i = 0;
+    map->map = (int **)malloc(sizeof(int*) * y);
+    while (i < y)
+    {
+        map->map[i] = (int *)malloc(sizeof(int) * x);
+        i++;   
+    }
+
+}
+
 t_point getDimensions(int fd)
 {
     t_point dim;
@@ -19,6 +35,7 @@ t_point getDimensions(int fd)
     int x;
     int i;
     int y;
+
     i = 0;
     y = 0;
     x = 0;
@@ -41,6 +58,41 @@ t_point getDimensions(int fd)
     dim.y = y;
       printf("\nDimensions X: %d Y: %d \n", dim.x, dim.y);
     return (dim);
+}
+
+void    fillMap(int fd, t_map *map)
+{
+    char *line;
+    char **line_splits;
+    int i;
+    int x;
+    int y;
+
+    x = 0;
+    y = 0;
+    i = 0;
+    while(get_next_line(fd, &line))
+    {
+        //Split the line at each ' '
+        printf("line: %s \n",line);
+        // free(line_splits);
+        line_splits = ft_strsplit(line, ' ');
+        printf("Round %d\n", y);
+        while(line_splits[i])
+        {
+            //convert each line split to a value
+            map->map[y][x] = ft_atoi(line_splits[i]);
+           //map->map[y][x] = 0;
+            x++;
+            i++;
+        }
+        i = 0;
+        //map->map[y][x] = 0;
+        x = 0;
+        y++;
+        // Don't forget to delete the allocated space.
+
+    }
 }
 
 int main(int argc, char **argv)
@@ -66,12 +118,18 @@ int main(int argc, char **argv)
     fd = open(argv[1], O_RDONLY);
     //Malloc map_size
     t_map *map;
-        //Set map dimensions;
-    map->dimensions.x = dim.x;
-    map->dimensions.y = dim.y;
-    map->map = (t_point)malloc(sizof(t_point)*dim.x);
+    //Init map
+    map = NULL;
+    map = ft_memalloc(sizeof(t_map));
+    // Set map dimensions;
+    //map->dimensions = ft_memalloc(sizeof(t_point));
+    map->dimensions = &dim;
+    // Allocate map
+    allocMap(map);
     // print dimensions
-    printf("\nDimensions X: %d Y: %d \n", dim.x, dim.y);
+    printf("\nDimensions X: %d Y: %d\n", map->dimensions->x, map->dimensions->y);
+    printf("\nMap test values Z: %d\n", map->map[0][0]);
+    fillMap(fd, map);
     /* testing inputs */
     void *mlx_ptr;
 	void *win_ptr;

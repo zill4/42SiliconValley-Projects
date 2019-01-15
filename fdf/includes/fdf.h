@@ -13,8 +13,8 @@ typedef struct s_point
 }               t_point;
 typedef struct s_map
 {
-    t_point **map;
-    t_point dimensions; //the overall dimensions of the map.
+    int **map;
+    t_point *dimensions; //the overall dimensions of the map.
 }               t_map;
 
 #endif

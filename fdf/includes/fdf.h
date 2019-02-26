@@ -7,15 +7,18 @@
 
 typedef struct s_point
 {
-    int x; //The position on the horizontal axis.
-    int y; //The position on the vertical axis.
-    int z; //The value of the point axis.
+    int x;          //The position on the horizontal axis.
+    int y;          //The position on the vertical axis.
+    int z;          //The value of the point axis.
+    char *color;    //The color value passed in by the map.
+                    // Color :: 0xFFFFFF
 }               t_point;
 
 typedef struct s_map
 {
-    int **map;
-    t_point *dimensions; //the overall dimensions of the map.
+    t_point **map;
+    int dim_x;
+    int dim_y;
 }               t_map;
 
 typedef struct s_strmap

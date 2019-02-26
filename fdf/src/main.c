@@ -1,5 +1,50 @@
 #include "../includes/fdf.h"
 
+
+/*
+    void append_strmap(t_strmap *head, t_strmap *new)
+    PARAMS:
+        t_strmap *head :: The beginning of the list.
+        t_strmap *new :: The new block to be appended to the list. 
+    Description:
+        append_strmap appends a new block to the end of the current list
+        pointing to the head.
+*/
+void append_strmap(t_strmap *head, t_strmap *new)
+{
+    t_strmap *rover;
+    rover = head;
+    while(rover->next)
+        rover = rover->next;
+    rover->next = new;
+}
+/*
+    t_strmap *new_strmap(int row, char** strings)
+    PARAMS:
+        int row :: The index of which row this given block is on.
+        int col :: Essentially the length of the given array of strings.
+        char **strings :: The array of strings to be saved within this block.
+    Description:
+        new_strmap creates a new strmap block, and returns the address of it.
+*/
+t_strmap *new_strmap(int row, int col, char** strings)
+{
+    t_strmap *new;
+    int i;
+
+    if (!strings)
+        return (NULL);
+    i = 0;
+    if ((new = malloc(sizeof(t_strmap))))
+    {
+        new->row = row;
+        new->col = col;
+        new->line = strings;
+        new->next = NULL;
+    }
+    return (new);
+}
+
 void    draw_grid(void* mlx_ptr, void *win_ptr, int grid)
 {
     grid++;
@@ -12,135 +57,79 @@ void    draw_grid(void* mlx_ptr, void *win_ptr, int grid)
         }
     }
 }
-void    allocMap(t_map *map)
-{
-    int x = map->dimensions->x;
-    int y = map->dimensions->y;
-    int i;
-    
-    i = 0;
-    map->map = (int **)malloc(sizeof(int*) * y);
-    while (i < y)
-    {
-        map->map[i] = (int *)malloc(sizeof(int) * x);
-        i++;   
-    }
 
-}
+/*
+    t_point loadMap(int fileDescriptor, t_strmap *top_of_map)
+    Params: 
+        int fd :: The file descriptor for opening the file needed to be read.
+        t_strmap *head :: The top of the list of lines that neeed to be parsed for color and depth.
+    Description:
+        Read through the entire file, save all points into a strmap.
 
-t_point getDimensions(int fd)
+
+*/
+void loadMap(int fd, t_strmap *head)
 {
-    t_point dim;
+    // Variables
     char *line;
-    int x;
+    char **strings;
     int i;
-    int y;
 
     i = 0;
-    y = 0;
-    x = 0;
+    // Iterate through file collecting all numbers. 
     while (get_next_line(fd, &line))
     {
-        /* processes map into numeric map */
         ft_putstr(line);
-        while(line[i])
-        {
-            //Check if digit is surrounded by ' 's such that it constitutes a value.
-            if (ft_isdigit(line[i]) && line[i -1] == ' ' && line[i + 1] == ' ')
-                x++;
-            i++;
-        }
-        dim.x = x;
+        // Allocate
+        strings = malloc(sizeof(char)*ft_strlen(line)/2);
+        strings = ft_strsplit(line, ' ');
+        //We can assume that the size of each string array is arond half the line len.
+        // This should append a new map to the head.
+        if (i > 0)
+            append_strmap(head, new_strmap(i, ft_strlen(line), strings));
+        else
+            head = new_strmap(i, ft_strlen(line), strings);
+        i++;
         ft_putchar('\n');
-        y++;
-    }
-    dim.x += 2;
-    dim.y = y;
-      printf("\nDimensions X: %d Y: %d \n", dim.x, dim.y);
-    return (dim);
-}
-
-void    fillMap(int fd, t_map *map)
-{
-    char *line;
-    char **line_splits;
-    int i;
-    int x;
-    int y;
-
-    x = 0;
-    y = 0;
-    i = 0;
-    while(get_next_line(fd, &line))
-    {
-        //Split the line at each ' '
-        printf("line: %s \n",line);
-        // free(line_splits);
-        line_splits = ft_strsplit(line, ' ');
-        printf("Round %d\n", y);
-        while(line_splits[i])
-        {
-            //convert each line split to a value
-            map->map[y][x] = ft_atoi(line_splits[i]);
-           //map->map[y][x] = 0;
-            x++;
-            i++;
-        }
-        i = 0;
-        //map->map[y][x] = 0;
-        x = 0;
-        y++;
-        // Don't forget to delete the allocated space.
-
     }
 }
+
+
 
 int main(int argc, char **argv)
 {
-    /* VARIABLES */
-    // File Descriptor
+        // File Descriptor
     int fd;
-    // temporary string container
+        // Container for map depths.
+    t_strmap *head;
+    head = NULL;
     printf("Welcome to FdF!\n");
-
-    /* We are first going to read in a map file */
+        // First going to read in a map file 
     if (argc != 2)
     {
         ft_putstr("Usage: FdF input file\n");
         return (1);
     }
-    // Open file for initial dimension check.
+        // Open file for initial dimension check.
     fd = open(argv[1], O_RDONLY);
-    // Get dimensions
-    t_point dim = getDimensions(fd);
-    // Close and reopen file for map read.
+        // Loading Map :: loadMap(File Descriptor, String Map container)
+    loadMap(fd, head);
+        // The file can now be closed.
     close(fd);
-    fd = open(argv[1], O_RDONLY);
-    //Malloc map_size
-    t_map *map;
-    //Init map
-    map = NULL;
-    map = ft_memalloc(sizeof(t_map));
-    // Set map dimensions;
-    //map->dimensions = ft_memalloc(sizeof(t_point));
-    map->dimensions = &dim;
-    // Allocate map
-    allocMap(map);
-    // print dimensions
-    printf("\nDimensions X: %d Y: %d\n", map->dimensions->x, map->dimensions->y);
-    printf("\nMap test values Z: %d\n", map->map[0][0]);
-    fillMap(fd, map);
-    /* testing inputs */
-    void *mlx_ptr;
-	void *win_ptr;
-    int grid = 12;
-    t_point one;
-    one.x = 10;
-    one.y = 10;
-    one.z = 42;
-	mlx_ptr = mlx_init();
-	win_ptr = mlx_new_window(mlx_ptr, 500, 500, "FdF");
-    draw_grid(mlx_ptr, win_ptr, grid);
-	mlx_loop(mlx_ptr);
+    //parseMap(head);
+
+//----------------------------------------------------------------------------------- 
+    // /* testing inputs */
+    // void *mlx_ptr;
+	// void *win_ptr;
+    // int grid = 12;
+    // t_point one;
+    // one.x = 10;
+    // one.y = 10;
+    // one.z = 42;
+	// mlx_ptr = mlx_init();
+	// win_ptr = mlx_new_window(mlx_ptr, 1000, 1000, "FdF");
+    // draw_grid(mlx_ptr, win_ptr, grid);
+	// mlx_loop(mlx_ptr);
     return (0);
 }

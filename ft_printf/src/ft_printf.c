@@ -13,8 +13,9 @@
 #include <stdio.h>
 #include <limits.h>
 
-void isFlag(char c, va_list ap, int *count)
+void isFlag(char str_cap, va_list ap, int *count)
 {
+  // str_cap
 	if (c == 's')
 		pf_putstr(va_arg(ap, char*), count);
 	else if (c == 'c')
@@ -31,6 +32,9 @@ void isFlag(char c, va_list ap, int *count)
 		pf_atoib(va_arg(ap, int64_t), 10, count);
 	else if (c == 'x')
 		pf_atoib(va_arg(ap, int64_t), 16, count);
+  else if (c == 'X'){
+		pf_atoib_cap(va_arg(ap, int64_t), 16, count);
+  }
 
 }
 
@@ -39,6 +43,8 @@ int b_printf(char* str, ...)
 	va_list valist;
 	int i;
 	int count;
+    // String capture of the squence to check.
+  char *str_capture;
 
 	count = 0;
 	va_start(valist, str);
@@ -47,6 +53,7 @@ int b_printf(char* str, ...)
 	{
 		if (str[i] == '%')
 		{
+      //  Must send whole string till a given point.
 			isFlag(str[i + 1], valist, &count);
 			i++;
 		}
@@ -100,12 +107,19 @@ return count;
     printf("mine = %d, actual = %d\n", b_printf("my   pointer:\t\t%p\n", str), printf("real pointer:\t\t%p\n", str));
     printf("\n");
     printf("real str empty:\t\t%s\n", empty);
-    printf("mine = %d, actual = %d\n", b_printf("my   str empty:\t\t%s\n", empty), printf("real str empty:\t\t%s\n", empty));
+    printf("mine = %-d, actual = %-d\n", b_printf("my   str empty:\t\t%s\n", empty), printf("real str empty:\t\t%s\n", empty));
     printf("\n");
-
-    printf("\t\t\t---> my   length: %d <---\n", b_printf("%d %s %c %x  ~random-words./\'\\ %o %u %p\n", snum, str, chr, xnum, onum, unum, str));
-    printf("\t\t\t---> real length: %d <---\n", printf("%d %s %c %x  ~random-words./\'\\ %o %u %p\n", snum, str, chr, xnum, onum, unum, str));
+    printf("\t\t\t---> my   length: %d <---\n", b_printf("%d %s %c %x  ~random-words./\'\\ %o %u %p\n", SHRT_MAX, str, chr, xnum, onum, unum, str));
+    printf("\t\t\t---> real length: %d <---\n", printf("%+-.*f %s %c %-#x  ~random-words./\'\\ %#o %u %p\n",-100,SHRT_MAX * 1.0, str, chr, xnum, onum, unum, str));
     printf("\n");
+    int x = 365;
+    const char * y = "monkeys";
+    printf ("<%d> is not justified.\n", x);
+    printf ("<%5d> is right-justified.\n", x);
+    printf ("<%-5d> The minus sign makes it left-justified.\n", x);
+    printf ("'%s' is not justified.\n", y);
+    printf ("'%10s' is right-justified.\n", y);
+    printf ("'%-10s' is left-justified using a minus sign.\n", y);
 
   	return (0);
   }

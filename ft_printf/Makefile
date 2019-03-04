@@ -13,7 +13,7 @@
 NAME = ft_printf
 
 #	src / obj files
-SRC	= ./ft_printf.c ./pf_putstr.c ./pf_putnbr.c ./pf_putchar.c ./pf_atoib.c
+SRC	= ./ft_printf.c ./pf_putstr.c ./pf_putnbr.c ./pf_putchar.c ./pf_atoib.c ./pf_atoib_cap.c
 OBJ	= $(addprefix $(OBJDIR), $(SRC:.c=.o))
 
 #	compiler

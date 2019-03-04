@@ -13,9 +13,26 @@
 #include <stdio.h>
 #include <limits.h>
 
-void isFlag(char str_cap, va_list ap, int *count)
+void isFlag(char *str_cap, va_list ap, int *count)
 {
-  // str_cap
+  int i;
+  int k;
+  char flags[30] = "cspdioufxXlhL0123456789.*#0-+ ";
+
+  i = 0;
+  k = 0;
+  // Till str_cap finds another % or till end of str_cap
+  while (str_cap[i] != '%' || !str_cap[i])
+  {
+    // Given a flag respective function
+    while (flags[k])
+    {
+
+      k++;
+    }
+    i++;
+  }
+  
 	if (c == 's')
 		pf_putstr(va_arg(ap, char*), count);
 	else if (c == 'c')
@@ -44,7 +61,7 @@ int b_printf(char* str, ...)
 	int i;
 	int count;
     // String capture of the squence to check.
-  char *str_capture;
+  char *str_cap;
 
 	count = 0;
 	va_start(valist, str);
@@ -54,7 +71,9 @@ int b_printf(char* str, ...)
 		if (str[i] == '%')
 		{
       //  Must send whole string till a given point.
-			isFlag(str[i + 1], valist, &count);
+      //  str_cap should be equal to position as is in read.
+      str_cap = str + i + 1;
+      isFlag(str_cap, valist, &count);
 			i++;
 		}
 		else

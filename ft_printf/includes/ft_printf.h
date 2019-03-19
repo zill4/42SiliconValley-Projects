@@ -6,6 +6,7 @@
 # include <string.h>
 # include <stdlib.h>
 # include <stdarg.h>
+# include <inttypes.h>
 # include "../libft/src/libft.h"
 
 
@@ -20,9 +21,9 @@ typedef struct  s_argu{
     // same as precision but for white space / and zeroing.
     int width;
 }               t_argu;
-
+# define PRINTF_FAILURE (-1)
 // Macro function for shifting x one bit to the left.
-# define FT_BIT (x) (1 << (x))
+# define FT_BIT(x) (1 << (x))
 // The specifiers for printf
 # define SPECIFIERS "spdiouxXc"
 # define SPECI_SIZE (ft_strlen(SPECIFIERS))
@@ -51,14 +52,15 @@ typedef struct  s_argu{
 # define U_BIT      (FT_BIT(10))
 # define LOW_X_BIT  (FT_BIT(11))
 # define UPP_X_BIT  (FT_BIT(12))
-# define HH         (FT_BIT(13))
-# define H          (FT_BIT(14))
-# define LL         (FT_BIT(15))
-# define L          (FT_BIT(16))
-# define J          (FT_BIT(17))
-# define Z          (FT_BIT(18))
-# define WIDTH      (FT_BIT(19))
-# define PRECISION  (FT_BIT(20))
+# define C_BIT      (FT_BIT(13))
+# define HH         (FT_BIT(14))
+# define H          (FT_BIT(15))
+# define LL         (FT_BIT(16))
+# define L          (FT_BIT(17))
+# define J          (FT_BIT(18))
+# define Z          (FT_BIT(19))
+# define WIDTH      (FT_BIT(20))
+# define PRECISION  (FT_BIT(21))
 // d - Print Decimal, i - Print Integer
 void pf_putnbr(long d, int *count);
 // s - Print String

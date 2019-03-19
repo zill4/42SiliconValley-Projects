@@ -13,8 +13,38 @@
 #include <stdio.h>
 #include <limits.h>
 
-  int   main()
+// Takes in a string*, and a variable number of arguments.
+int ft_printf(char* string, ...)
+{
+  // We return character count as a part of the function.
+  int   count;
+  // Length is the a container for count
+  int   len;
+  // Our variable list to be be iterated through.
+  va_list ap;
+
+  count = 0;
+  va_start(ap, string);
+  while (*string)
   {
-    
-    return (0);
-  }
+    // If we run into the flag.
+    if (*string == '%')
+    {
+        // Move the character forward.
+        string += 1;
+        
+        count += 1;
+    }
+    string += 1;
+  }  
+  // exit the list.
+  va_end(ap);
+  return (count);
+}
+
+int   main()
+{
+  printf("First example %d", 1);
+  ft_printf("First example %d", 1);
+  return (0);
+}

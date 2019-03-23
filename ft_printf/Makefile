@@ -10,45 +10,48 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME = ft_printf
-
+NAME = ftprintf.a
 #	src / obj files
-SRC	= ./ft_printf.c ./pf_putstr.c ./pf_putnbr.c ./pf_putchar.c ./pf_atoib.c ./pf_atoib_cap.c ./ft_space.c
-OBJ	= $(addprefix $(OBJDIR), $(SRC:.c=.o))
+# Folders of the source files (*.c)
+SRC_DIR = src/
+LIB_DIR = libft/src/
 
-#	compiler
-CC	= gcc
-CFLAGS	= -Wall -Wextra -Werror -g
+SRC_FILES =  arg.c hex.c num.c oct.c signed.c spec.c strings.c unsigned.c ft_printf.c
+LIBFT_FILES = ft_atoi.c ft_bzero.c ft_isdigit.c ft_memalloc.c ft_putchar.c \
+			  ft_putnchar.c ft_putstr.c ft_putunbr.c  \
+			   ft_strdup.c ft_strlen.c ft_strncpy.c ft_strrev.c ft_memset.c\
+			  ft_strsub.c ft_lower_str.c  ft_putchar.c ft_putstr.c ft_strnew.c \
 
-#	ft library
-FT	= ./libft/
-FT_LIB	=	$(addprefix $(FT), libft.a)
-FT_INC	=	-I ./libft
-FT_LNK  = 	-L	./libft -l ft
+# Source files path
+SRC = $(addprefix $(SRC_DIR), $(SRC_FILES))
+LIBFT = $(addprefix $(LIB_DIR), $(LIBFT_FILES))
 
-#	directories
-SRCDIR	= ./src/
-INCDIR	= ./includes/
-OBJDIR	= ./obj/
+# Objects
+OBJ = $(SRC_FILES:.c=.o) $(LIBFT_FILES:.c=.o)
 
-all: obj $(FT_LIB)  $(NAME)
+# Flags
+INC = -Iincludes/
+FLAGS = -Wall -Wextra -Werror
 
-obj:
-	mkdir -p $(OBJDIR)
+# all rule
+all: $(NAME)
 
-$(OBJDIR)%.o:$(SRCDIR)%.c
-	$(CC) $(CFLAGS) $(MLX_INC) $(FT_INC) -I $(INCDIR) -o $@ -c $<
+# Compiling command
+$(NAME):
+	@gcc -c $(FLAGS) $(SRC) $(LIBFT) $(INC)
+	@ar rc $(NAME) $(OBJ)
+	@ranlib $(NAME)
 
-$(FT_LIB):
-	make -C $(FT)
-
-$(NAME): $(OBJ)
-	$(CC) $(OBJ)  $(FT_LNK) -lm -o $(NAME)
-
+# clean rule
 clean:
-		rm -rf $(OBJDIR)
-		make -C $(FT) clean
-fclean:
-		rm -rf $(NAME)
-		make -C $(FT) fclean
+	@/bin/rm -f $(OBJ)
+
+# fclean rule
+fclean: clean
+	@/bin/rm -f $(NAME)
+
+# re rule
 re: fclean all
+
+# phony
+.PHONY: all clean fclean re

@@ -6,7 +6,7 @@
 /*   By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/17 20:19:41 by jcrisp            #+#    #+#             */
-/*   Updated: 2018/10/21 16:18:07 by jcrisp           ###   ########.fr       */
+/*   Updated: 2019/03/25 01:41:05 by jcrisp           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ void				ft_lstadd(t_list **alst, t_list *new);
 void				ft_lstiter(t_list *lst, void (*f)(t_list *elem));
 void				ft_putnchar(char c, int n);
 void				ft_putunbr(uintmax_t n);
-char 				*ft_strrev(char *str);
+char				*ft_strrev(char *str);
 char				*ft_lower_str(char *str);
 t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
 

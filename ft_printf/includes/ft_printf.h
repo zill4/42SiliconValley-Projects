@@ -1,30 +1,33 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jcrisp <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/25 01:34:56 by jcrisp            #+#    #+#             */
+/*   Updated: 2019/03/25 01:40:23 by jcrisp           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef FT_PRINTF_H
 # define FT_PRINTF_H
 
 # include <stdarg.h>
 # include <inttypes.h>
+# include <stdio.h>
 
+typedef struct		s_argu{
+	int				flags;
+	int				precision;
+	int				width;
+}					t_argu;
 
-
-/* Flag Functions */
-
-// Define some structure for keeping track of an arugments printable modifiers.
-typedef struct  s_argu{
-    // Must keep track of our bit after being shifted to tell which have been flagged.
-    int flags;
-    // Keeps track of precision of a given string.
-    int precision;
-    // same as precision but for white space / and zeroing.
-    int width;
-}               t_argu;
 # define PRINTF_FAILURE (-1)
-// Macro function for shifting x one bit to the left.
 # define FT_BIT(x) (1 << (x))
-// The specifiers for printf
 # define SPECIFIERS "spdiouxXc"
 # define SPECI_SIZE (ft_strlen(SPECIFIERS))
 
-// Endcoding the SPECIFIERS as a macro for shifting easier...
 # define S (0)
 # define P (1)
 # define D (2)
@@ -34,7 +37,6 @@ typedef struct  s_argu{
 # define LOWER_X (6)
 # define UPPER_X (7)
 # define C (8)
-// Encoding for the attributes of printf
 # define HASH       (FT_BIT(0))
 # define ZERO       (FT_BIT(1))
 # define MINUS      (FT_BIT(2))
@@ -59,7 +61,6 @@ typedef struct  s_argu{
 # define PRECISION  (FT_BIT(21))
 
 int					ft_printf(const char *string, ...);
-//
 int					spec_buff(va_list arg, char **format, t_argu *attr);
 int					print_spaces(int width, int len, int attr);
 int					get_atts(char **format, va_list arg, t_argu *attr);
@@ -69,8 +70,6 @@ char				*get_num_unsign(uintmax_t n, int *nbdig, int base);
 int					form_sign(intmax_t n, t_argu *attr);
 int					form_usign(uintmax_t n, t_argu *attr, \
 						char *(*convert)(uintmax_t, int *));
-//
-
 int					print_str(va_list ap, t_argu *attr);
 int					print_hex(va_list ap, t_argu *attr);
 int					print_dec(va_list ap, t_argu *attr);

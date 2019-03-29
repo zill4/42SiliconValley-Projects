@@ -210,6 +210,7 @@ char* concat(const char *s1, const char *s2)
     strcpy(result, temp);
     strcat(result, s2);
     free(temp);
+    //free(result);
     return result;
 }
 void	mode_print(int  mode)
@@ -289,7 +290,8 @@ void loadSubs(t_dlist *head, t_spec *spec)
     struct stat buf;
     struct dirent *de;
     int count = 0;
-    char *name = strdup(head->name);
+    // char *name = strdup(head->name);
+    char *name = head->name;
     head->sub = malloc(sizeof(t_dlist));
     head->sub->next = NULL;
     head->blocks = 0;
@@ -490,6 +492,9 @@ int main(int argc, char **argv)
                 sort_list(head, s_byName);
         }
         printList(head, spec);
+        free(spec);
+        free(head);
+        while(1);
         // while(head->next)
         // {
         //     free(head->name);

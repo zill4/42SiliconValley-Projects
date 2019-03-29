@@ -75,7 +75,7 @@ char	*ft_strdup(char *s1)
 		d[i] = s1[i];
 		i++;
 	}
-	d[i] = '\0';
+	d[i] = '\0';S_ISDIRf
 	return (d);
 }
 
@@ -165,6 +165,7 @@ void sortLinkbyTime()
 		for(j =i->next; j !=NULL; j = j->next)
 		{
 			diff_m = i->buf1.st_mtime - j->buf1.st_mtime;
+			printf("diff_m is %d\n", diff_m);
 			if ((diff_m < 0 && g_R == 0) || (diff_m > 0 && g_R == 1))
 				swap_info(i,j);
 			if (diff_m == 0)
@@ -173,9 +174,7 @@ void sortLinkbyTime()
 				if ((diff_n < 0 && g_R == 0) || (diff_n > 0 && g_R == 1))
 					swap_info(i,j);
 			}
-
 		}
-
 	}
 }
 

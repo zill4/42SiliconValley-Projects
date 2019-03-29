@@ -16,108 +16,386 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <string.h>
-/*
-	SYS/STAT.H available info
-dev_t     st_dev     ID of device containing file
-ino_t     st_ino     file serial number
-mode_t    st_mode    mode of file (see below)
-nlink_t   st_nlink   number of links to the file
-uid_t     st_uid     user ID of file
-gid_t     st_gid     group ID of file
-dev_t     st_rdev    device ID (if file is character or block special)
-off_t     st_size    file size in bytes (if file is a regular file)
-time_t    st_atime   time of last access
-time_t    st_mtime   time of last data modification
-time_t    st_ctime   time of last status change
-blksize_t st_blksize a filesystem-specific preferred I/O block size for
-                     this object.  In some filesystem types, this may
-                     vary from file to file
-blkcnt_t  st_blocks  number of blocks allocated for this object
- */
-
+#include <time.h>
+#include <grp.h>
+#include <pwd.h>
 typedef struct s_spec
 {
-    int     flags;   
+    int     flags;
 }              t_spec;
+
+typedef struct s_dlist
+{
+    char *name;
+    int blocks;
+    struct stat buf;
+    struct s_dlist* sub;
+    struct s_dlist* next;
+}               t_dlist;
+
+
 # define FT_BIT(x) (1 << (x))
-/*
-    -a      Include directory entries whose names begin with a dot (.).
-    -l      (The lowercase letter ``ell''.)  List in long format.  (See below.)  If the output is to a terminal, a total sum for all the
-             file sizes is output on a line before the long listing.
-    -R      Recursively list subdirectories encountered.
-    -r      Reverse the order of the sort to get reverse lexicographical order or the oldest entries first (or largest files last, if com-
-             bined with sort by size
-    -t      Sort by time modified (most recently modified first) before sorting the operands by lexicographical order.
-*/
 # define SPECIFIERS "lRart"
-# define L          (0)
-# define UPPER_R    (1)
-# define A          (2)
-# define LOWER_R    (3)
-# define T          (4)
-# define L_BIT      (FT_BIT(0))
+# define L              (0)
+# define UPPER_R        (1)
+# define A              (2)
+# define LOWER_R        (3)
+# define T              (4)
+# define L_BIT          (FT_BIT(0))
 # define UPPER_R_BIT    (FT_BIT(1))
 # define A_BIT          (FT_BIT(2))
 # define LOWER_R_BIT    (FT_BIT(3))
 # define T_BIT          (FT_BIT(4))
 
 
-// -R finds all directories in my current directory then preforms ls on that directory.
+void	ft_memdel(void **ap)
+{
+	if (!ap)
+		return ;
+	free(*ap);
+	*ap = NULL;
+}
+void				ft_strdel(char **as)
+{
+	ft_memdel((void **)as);
+}
+void				ft_bufdel(struct stat **as)
+{
+	ft_memdel((void **)as);
+}
+
+void	lstdel(t_dlist **list)
+{
+	t_dlist	*temp;
+
+	if ((*list))
+	{
+		temp = (*list)->next;
+		(*list)->next = NULL;
+		ft_strdel(&(*list)->name);
+		//ft_bufdel((list)->buf);
+		ft_memdel((void**)&(*list));
+		lstdel(&(temp));
+	}
+}
+void    append(t_dlist *head, char *name, struct stat buf)
+{
+    t_dlist *new;
+    new = malloc(sizeof(t_dlist));
+    new->next = NULL;
+    new->name = strdup(name);
+    //lstat(name, &buf);
+    while(head->next)
+        head = head->next;
+    memcpy(&(new->buf),&buf,sizeof(buf));
+    head->next = new;
+    //free(&name);
+    //free(&buf);
+}
+
+void    printIT(t_dlist *head)
+{
+    while(head->next)
+    {
+        printf("%s\n", head->name);
+        head = head->next;
+    }
+     printf("%s\n", head->name);
+}
+
+int     s_byTime(t_dlist *tmp1, t_dlist *tmp2)
+{
+
+    int diff_m = tmp1->buf.st_mtime - tmp2->buf.st_mtime;
+    int diff_n = tmp1->buf.st_mtimespec.tv_nsec - tmp2->buf.st_mtimespec.tv_nsec;
+    if (diff_m < 0)
+        return (0);
+    else if (diff_m == 0)
+    {
+        if (diff_n < 0)
+            return (0);
+        else
+            return (1);
+    }
+    return (1);
+}
+
+int     s_byTimeR(t_dlist *tmp1, t_dlist *tmp2)
+{
+
+    int diff_m = tmp1->buf.st_mtime - tmp2->buf.st_mtime;
+    int diff_n = tmp1->buf.st_mtimespec.tv_nsec - tmp2->buf.st_mtimespec.tv_nsec;
+    if (diff_m < 0)
+        return (1);
+    else if (diff_m == 0)
+    {
+        if (diff_n < 0)
+            return (1);
+        else
+            return (0);
+    }
+    return (0);
+}
+
+int s_byName(t_dlist *tmp1, t_dlist *tmp2)
+{
+    int diff_m = strcmp(tmp1->name, tmp2->name);
+    if (diff_m < 0)
+        return (1);
+    else
+        return (0);
+}
+
+int s_byNameR(t_dlist *tmp1, t_dlist *tmp2)
+{
+    int diff_m = strcmp(tmp1->name, tmp2->name);
+    if (diff_m < 0)
+        return (0);
+    else
+        return (1);
+}
+
+
+void swap_info(t_dlist *one, t_dlist *second)
+{
+	char *str_tmp;
+	struct stat buf_tmp;
+
+	str_tmp = one->name;
+	buf_tmp = one->buf;
+	one->name = second->name;
+	one->buf = second->buf;
+	second->name = str_tmp;
+	second->buf = buf_tmp;
+}
+
+t_dlist *sort_list(t_dlist *lst, int (*cmp)(t_dlist *, t_dlist *))
+{
+	if (lst == NULL)
+		return (NULL);
+	if (lst->next == NULL)
+		return (lst);
+	t_dlist *tmp = lst;
+	t_dlist *tmp2 = lst;
+    t_dlist *buf = malloc(sizeof(t_dlist));
+
+	while(tmp->next)
+	{
+		while(tmp2->next)
+		{
+			if (cmp(tmp, tmp2) == 1)
+                swap_info(tmp, tmp2);
+			tmp2 = tmp2->next;
+		}
+		tmp2 = lst;
+		tmp = tmp->next;
+	}
+	while (tmp2->next)
+	{
+		if (cmp(tmp, tmp2) == 1)
+            swap_info(tmp, tmp2);
+		tmp2 = tmp2->next;
+	}
+    free(buf);
+	return (lst);	
+}
+
+
 char* concat(const char *s1, const char *s2)
-{  
+{
     char *temp = malloc(strlen(s1) + 2);
     strcpy(temp, s1);
     strcat(temp, "/");
-    char *result = malloc(strlen(temp) + strlen(s2) + 1); // +1 for the null-terminator
-    // in real code you would check for errors in malloc here
-
-
+    char *result = malloc(strlen(temp) + strlen(s2) + 1);
     strcpy(result, temp);
     strcat(result, s2);
+    free(temp);
     return result;
 }
-
-void  next_dir(char *name)
+void	mode_print(int  mode)
 {
-    // Open the next directory.
+	char c;
+	size_t		i;
+	static char temp[10];
+	static char buff[] = "rwxrwxrwx";
+
+	i = 0;
+	while (i < 9)
+	{
+		temp[i] = (mode & (1 << (8 - i))) ? buff[i] : '-';
+		i++;
+	}
+	temp[i] = '\0';
+	if((mode & S_IFDIR) == S_IFDIR)
+		c = 'd';
+	else if ((mode & S_IFLNK) == S_IFLNK)
+		c = 'l';
+	else if ((mode & S_IFBLK) == S_IFBLK)
+		c = 'b';
+	else if ((mode & S_IFCHR) == S_IFCHR)
+		c = 'c';
+	else if ((mode & S_IFIFO) == S_IFIFO)
+		c = 'p';
+	else if ((mode & S_IFSOCK) == S_IFSOCK)
+		c = 's';
+	else
+		c = '-';
+	printf("%c%s", c, temp);
+}
+void  print_dir(t_dlist *head, t_spec *spec)
+{
+            if (strcmp(head->name, "."))
+                printf("%s\n", head->name);
+            if (spec->flags & L_BIT)
+                printf("Total %d\n",head->blocks);
+            if (head->sub != NULL)
+            {
+                while(head->sub->next)
+                {
+                    if (spec->flags & L_BIT)
+                    {
+                        mode_print(head->sub->buf.st_mode);
+                        printf(" %hu ",head->sub->buf.st_nlink);
+                        printf("%-5s ",getpwuid(head->sub->buf.st_uid)->pw_name);
+                        printf("%s ",getgrgid(head->sub->buf.st_gid)->gr_name);
+                        printf("%6lld ",head->sub->buf.st_size);
+                        printf("%.12s ",4+(ctime (&head->sub->buf.st_mtime)));
+                    }
+                    printf("%s\n",head->sub->name);
+                    //free(head->sub->name);
+                    //free(head->sub);
+                    head->sub = head->sub->next;
+                }
+                if (spec->flags & L_BIT)
+                {
+                    mode_print(head->sub->buf.st_mode);
+                    printf(" %hu ",head->sub->buf.st_nlink);
+                    printf("%-5s ",getpwuid(head->sub->buf.st_uid)->pw_name);
+                    printf("%s ",getgrgid(head->sub->buf.st_gid)->gr_name);
+                    printf("%6lld ",head->sub->buf.st_size);
+                    printf("%.12s ",4+(ctime (&head->sub->buf.st_mtime)));
+                }
+                printf("%s\n ",head->sub->name);
+                //free(head->sub->name);
+                //free(head->sub);
+            }
+        //lstdel(&head->sub);
+        printf("\n"); 
+}
+
+void loadSubs(t_dlist *head, t_spec *spec)
+{
+    DIR *dr = opendir(head->name);
+    struct stat buf;
+    struct dirent *de;
+    int count = 0;
+    char *name = strdup(head->name);
+    head->sub = malloc(sizeof(t_dlist));
+    head->sub->next = NULL;
+    head->blocks = 0;
+    if (dr != NULL)
+    {
+        // read in all sub-directories
+        while ((de = readdir(dr)) != NULL)
+        {   
+            lstat(concat(name, de->d_name), &buf);  
+            if (spec->flags & A_BIT)
+            {
+                    if (count == 0) 
+                    {			
+                        head->sub->name = strdup(de->d_name);
+                        memcpy(&(head->sub->buf),&buf,sizeof(buf));
+                    }
+                    else
+                        append(head->sub, de->d_name, buf);
+                    count += buf.st_blocks;
+            }
+            else
+            {
+                if ((de->d_name[0] !=  '.'))
+                {
+                    if (count == 0) 
+                    {			
+                        head->sub->name = strdup(de->d_name);
+                        memcpy(&(head->sub->buf),&buf,sizeof(buf));
+                    }
+                    else
+                        append(head->sub, de->d_name, buf);
+                    count += buf.st_blocks;
+                }
+            }
+            
+        }
+        head->blocks = count;
+        if (head->sub->name == NULL)
+        {
+            closedir(dr);
+            return ;
+        }
+        if (spec->flags & T_BIT)
+        {
+            if (spec->flags & T_BIT && spec->flags & LOWER_R_BIT)
+                sort_list(head->sub, s_byTimeR);
+            else
+                sort_list(head->sub, s_byTimeR);
+        }
+        else
+            sort_list(head->sub, s_byName);
+        closedir(dr);
+    }
+}
+
+void    printList(t_dlist *head, t_spec *spec)
+{
+    while (head->next)
+    {
+        loadSubs(head, spec);
+        print_dir(head, spec);
+        head = head->next;
+    }
+    loadSubs(head, spec);
+    print_dir(head, spec);
+}
+
+
+void  next_dir(char *name, t_dlist *head, t_spec *spec)
+{
     DIR *dr = opendir(name);
     struct dirent *de;
     struct stat buf;
-    if (dr != NULL){
-        //printf("ERROR could not open %s\n", name);
-    //else
-    //{
+    char* temp;
+    if (dr != NULL)
+    {
         while ((de = readdir(dr)) != NULL)
         {
-            //printf("Current Dir is %s\n", de->d_name);
-            // Get directories.
-            lstat(de->d_name, &buf);
-            //printf("CHECKING MODE %s : %d\n", de->d_name, buf.st_mode);
-            if (S_ISDIR(buf.st_mode) || buf.st_mode == 33188){
-                if ((strchr(de->d_name, '.') == 0 && strlen(de->d_name) > 1 && !(strcmp(de->d_name, ".."))) || (strchr(de->d_name, '.') == NULL))
+           lstat(concat(name, de->d_name), &buf);
+            if (spec->flags & UPPER_R_BIT)
+            {
+                if (S_ISDIR(buf.st_mode) )
                 {
-                    next_dir(concat(name, de->d_name));
-                }              
-            } 
+                    if (spec->flags & A_BIT)
+                    {
+                        if ((strchr(de->d_name, '.') == 0 && strlen(de->d_name) > 1 && !(strcmp(de->d_name, ".."))) || (strchr(de->d_name, '.') == NULL) || (strchr(de->d_name, '.') != NULL && strcmp(de->d_name, "..") && strcmp(de->d_name, ".")))
+                        {            
+                            temp = concat(name, de->d_name);
+                            append(head,temp, buf);
+                            next_dir(temp, head, spec);
+                        }
+                    }
+                    else
+                    {
+                        if ((strchr(de->d_name, '.') == 0 && strlen(de->d_name) > 1 && !(strcmp(de->d_name, ".."))) || (strchr(de->d_name, '.') == NULL))
+                        {            
+                            temp = concat(name, de->d_name);
+                            append(head,temp, buf);
+                            next_dir(temp, head, spec);
+                        }
+                    }                                 
+                }
+            }
         }
-        printf("*--------------- Current dir %s -----------------*\n", name);
-        dr = opendir(name);
-        while ((de = readdir(dr)) != NULL)
-            printf("%s\n", de->d_name);
         closedir(dr);
-        printf("---------------------------------------------------------\n");
     }
-    //closedir(dr);
-}
-void p_rec(int *arr, int pos)
-{
-    int i = pos;
-    if (pos != 8)
-    {
-        pos++;
-        p_rec(arr, pos);
-    }
-    printf("Arr: %d\n", arr[i]);
 }
 
 void set_flags(char *str, t_spec *spec)
@@ -147,8 +425,14 @@ void set_flags(char *str, t_spec *spec)
         i++;
     }
 }
+
 int main(int argc, char **argv) 
 { 
+    // My list
+    t_dlist *head;
+    head = malloc(sizeof(t_dlist));
+    head->next = NULL;
+    head->name = NULL;
     // args rovers
     int args = 1;
     // Pointer for directory entry 
@@ -157,50 +441,62 @@ int main(int argc, char **argv)
  	struct stat buf;
     // Specifier struct; contains list of flags.
     t_spec *spec;
-    // opendir() returns a pointer of DIR type.  
-    DIR *dr = opendir("."); 
-    // Must malloc for spec first
     spec = malloc(sizeof(t_spec));
-    // Initialize flags to zero.
     spec->flags = 0;
     // Traverse argument variables for flags, find string.
         //First check for number of arguments
-        if (argc > 1)
+        while (args < argc)
         {
-            while (args < argc)
+            if (argv[args][0] == '-')
+                set_flags(argv[args], spec);
+            else
             {
-                printf("Current argument %s\n", argv[args]);
-                // If this argument is a flag, set the flag
-                if (argv[args][0] == '-')
-                    set_flags(argv[args], spec);
-                else
+                lstat(argv[args], &buf);
+                if (S_ISDIR(buf.st_mode))
                 {
-                    lstat(argv[args], &buf);
- 		            //printf("Data: %ld\n", buf.st_ctime);
-                   // printf("Type is: %hu\n", buf.st_mode); 
-                    if (S_ISDIR(buf.st_mode))
-                    {
-                        //printf("is directory\n");
-                        next_dir(argv[args]);
+                    if (head->name == NULL){
+                        head->name = strdup(argv[args]);
+                        memcpy(&(head->buf), &buf, sizeof(buf));
                     }
+                    else
+                        append(head, argv[args], buf);
+                    next_dir(argv[args], head, spec);
                 }
-                args++;
             }
-        }   
-    // Need to get flags from string passed as argument
-    if (dr == NULL)  // opendir returns NULL if couldn't open directory 
-    { 
-        printf("Could not open current directory" ); 
-        return 0; 
-    } 
-    
-    // Refer http://pubs.opengroup.org/onlinepubs/7990989775/xsh/readdir.html 
-    // for readdir() 
-    // while ((de = readdir(dr)) != NULL)
-	//    	printf("%s\n", de->d_name);
-    /* RECURSIVE TEST */
-    int arr[] = {0,1,2,3,4,5,6,7,8};
-    //p_rec(arr, 0);
-    closedir(dr);     
+            args++;
+        }
+        if (argc <= 2)
+        {
+            lstat(".", &buf);
+            head->name = strdup(".");
+            memcpy(&(head->buf), &buf, sizeof(buf));
+            next_dir(head->name, head, spec);
+        }
+        //lstdel(&head);
+        // free(spec);
+        // free(head->name);
+        if (spec->flags & T_BIT)
+        {
+            if (spec->flags & T_BIT && spec->flags & LOWER_R_BIT)
+                sort_list(head, s_byTimeR);
+            else
+                sort_list(head, s_byTimeR);
+        }
+        else
+        {
+            if (spec->flags & LOWER_R)
+                sort_list(head, s_byNameR);
+            else
+                sort_list(head, s_byName);
+        }
+        printList(head, spec);
+        // while(head->next)
+        // {
+        //     free(head->name);
+        //     free(head);
+        //     head = head->next;
+        // }
+        // free(head->name);
+        // free(head);
     return 0; 
 } 

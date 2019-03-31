@@ -47,15 +47,6 @@ typedef struct s_dlist
 # define LOWER_R_BIT    (FT_BIT(3))
 # define T_BIT          (FT_BIT(4))
 
-t_dlist     *newNode(char *name, struct stat buf)
-{
-    t_dlist *new = malloc(sizeof(t_dlist));
-    new->next = NULL;
-    new->sub = NULL;
-    memcpy(&(new->buf), &buf, sizeof(buf));
-    new->name = strdup(name);
-    return (new);
-}
 
 void	ft_memdel(void **ap)
 {
@@ -72,16 +63,7 @@ void				ft_bufdel(struct stat **as)
 {
 	ft_memdel((void **)as);
 }
-void    delList(t_dlist *list)
-{
-    while(list)
-    {
-        ft_strdel(&list->name);
-        ft_memdel((void **)list);
-        free(list);
-        list = list->next;
-    }
-}
+
 void	lstdel(t_dlist **list)
 {
 	t_dlist	*temp;
@@ -96,23 +78,17 @@ void	lstdel(t_dlist **list)
 		lstdel(&(temp));
 	}
 }
-void    append(t_dlist **head, char *name, struct stat buf)
+void    append(t_dlist *head, char *name, struct stat buf)
 {
     t_dlist *new;
-    t_dlist *last;
-    last = *head;
     new = malloc(sizeof(t_dlist));
     new->next = NULL;
     new->name = strdup(name);
+    //lstat(name, &buf);
+    while(head->next)
+        head = head->next;
     memcpy(&(new->buf),&buf,sizeof(buf));
-    if (*head == NULL)
-    {
-        *head = new;
-        return;
-    }
-    while(last->next)
-        last = last->next;
-    last->next = new;
+    head->next = new;
     //free(&name);
     //free(&buf);
 }
@@ -126,7 +102,6 @@ void    printIT(t_dlist *head)
     }
      printf("%s\n", head->name);
 }
-
 
 int     s_byTime(t_dlist *tmp1, t_dlist *tmp2)
 {
@@ -165,7 +140,7 @@ int     s_byTimeR(t_dlist *tmp1, t_dlist *tmp2)
 int s_byName(t_dlist *tmp1, t_dlist *tmp2)
 {
     int diff_m = strcmp(tmp1->name, tmp2->name);
-    if (diff_m <= 0)
+    if (diff_m < 0)
         return (1);
     else
         return (0);
@@ -174,10 +149,10 @@ int s_byName(t_dlist *tmp1, t_dlist *tmp2)
 int s_byNameR(t_dlist *tmp1, t_dlist *tmp2)
 {
     int diff_m = strcmp(tmp1->name, tmp2->name);
-    if (diff_m > 0)
-        return (1);
-    else
+    if (diff_m < 0)
         return (0);
+    else
+        return (1);
 }
 
 
@@ -202,6 +177,7 @@ t_dlist *sort_list(t_dlist *lst, int (*cmp)(t_dlist *, t_dlist *))
 		return (lst);
 	t_dlist *tmp = lst;
 	t_dlist *tmp2 = lst;
+    t_dlist *buf = malloc(sizeof(t_dlist));
 
 	while(tmp->next)
 	{
@@ -220,6 +196,7 @@ t_dlist *sort_list(t_dlist *lst, int (*cmp)(t_dlist *, t_dlist *))
             swap_info(tmp, tmp2);
 		tmp2 = tmp2->next;
 	}
+    free(buf);
 	return (lst);	
 }
 
@@ -268,11 +245,8 @@ void	mode_print(int  mode)
 }
 void  print_dir(t_dlist *head, t_spec *spec)
 {
-    t_dlist *tmp;
             if (strcmp(head->name, "."))
                 printf("%s\n", head->name);
-            if (head->sub == NULL)
-                return ;
             if (spec->flags & L_BIT)
                 printf("Total %d\n",head->blocks);
             if (head->sub != NULL)
@@ -289,14 +263,9 @@ void  print_dir(t_dlist *head, t_spec *spec)
                         printf("%.12s ",4+(ctime (&head->sub->buf.st_mtime)));
                     }
                     printf("%s\n",head->sub->name);
-                    tmp = head->sub->next;
-                    ft_strdel(&head->sub->name);
-                    ft_memdel((void **)&head->sub);
-                    free(head->sub);
-                    head->sub = tmp;
                     //free(head->sub->name);
                     //free(head->sub);
-                    //head->sub = head->sub->next;
+                    head->sub = head->sub->next;
                 }
                 if (spec->flags & L_BIT)
                 {
@@ -310,7 +279,6 @@ void  print_dir(t_dlist *head, t_spec *spec)
                 printf("%s\n ",head->sub->name);
                 //free(head->sub->name);
                 //free(head->sub);
-                delList(head->sub);
             }
         //lstdel(&head->sub);
         printf("\n"); 
@@ -324,7 +292,6 @@ void loadSubs(t_dlist *head, t_spec *spec)
     int count = 0;
     // char *name = strdup(head->name);
     char *name = head->name;
-    char *temp;
     head->sub = malloc(sizeof(t_dlist));
     head->sub->next = NULL;
     head->blocks = 0;
@@ -333,8 +300,7 @@ void loadSubs(t_dlist *head, t_spec *spec)
         // read in all sub-directories
         while ((de = readdir(dr)) != NULL)
         {   
-            temp = concat(name, de->d_name);
-            lstat(temp, &buf);  
+            lstat(concat(name, de->d_name), &buf);  
             if (spec->flags & A_BIT)
             {
                     if (count == 0) 
@@ -343,7 +309,7 @@ void loadSubs(t_dlist *head, t_spec *spec)
                         memcpy(&(head->sub->buf),&buf,sizeof(buf));
                     }
                     else
-                        append(&head->sub, de->d_name, buf);
+                        append(head->sub, de->d_name, buf);
                     count += buf.st_blocks;
             }
             else
@@ -356,11 +322,11 @@ void loadSubs(t_dlist *head, t_spec *spec)
                         memcpy(&(head->sub->buf),&buf,sizeof(buf));
                     }
                     else
-                        append(&head->sub, de->d_name, buf);
+                        append(head->sub, de->d_name, buf);
                     count += buf.st_blocks;
                 }
             }
-            free(temp);
+            
         }
         head->blocks = count;
         if (head->sub->name == NULL)
@@ -370,61 +336,41 @@ void loadSubs(t_dlist *head, t_spec *spec)
         }
         if (spec->flags & T_BIT)
         {
-            if (spec->flags & LOWER_R_BIT)
+            if (spec->flags & T_BIT && spec->flags & LOWER_R_BIT)
                 sort_list(head->sub, s_byTimeR);
             else
-                sort_list(head->sub, s_byTime);
+                sort_list(head->sub, s_byTimeR);
         }
         else
-        {
-            if (spec->flags & LOWER_R_BIT)
-                sort_list(head->sub, s_byNameR);
-            else
-                sort_list(head->sub, s_byName);
-        }
+            sort_list(head->sub, s_byName);
         closedir(dr);
     }
 }
 
 void    printList(t_dlist *head, t_spec *spec)
 {
-
-    // while (head->next)
-    // {
-    //     loadSubs(head, spec);
-    //     print_dir(head, spec);
-    //     head = head->next;
-    // }
-    // loadSubs(head, spec);
-    // print_dir(head, spec);
-    if (head->next)
-        printList(head->next, spec);
+    while (head->next)
+    {
+        loadSubs(head, spec);
+        print_dir(head, spec);
+        head = head->next;
+    }
     loadSubs(head, spec);
     print_dir(head, spec);
 }
 
-int   checkPos(char* str, char c)
-{
-    char *tmp;
-    int pos;
-    tmp = strchr(str,c);
-    pos = (int)(tmp - str);
-    return (pos);
-}
+
 void  next_dir(char *name, t_dlist *head, t_spec *spec)
 {
     DIR *dr = opendir(name);
     struct dirent *de;
     struct stat buf;
     char* temp;
-    int pos;
     if (dr != NULL)
     {
         while ((de = readdir(dr)) != NULL)
         {
-            temp = concat(name, de->d_name);
-           lstat(temp, &buf);
-           free(temp);
+           lstat(concat(name, de->d_name), &buf);
             if (spec->flags & UPPER_R_BIT)
             {
                 if (S_ISDIR(buf.st_mode) )
@@ -434,20 +380,17 @@ void  next_dir(char *name, t_dlist *head, t_spec *spec)
                         if ((strchr(de->d_name, '.') == 0 && strlen(de->d_name) > 1 && !(strcmp(de->d_name, ".."))) || (strchr(de->d_name, '.') == NULL) || (strchr(de->d_name, '.') != NULL && strcmp(de->d_name, "..") && strcmp(de->d_name, ".")))
                         {            
                             temp = concat(name, de->d_name);
-                            append(&head,temp, buf);
+                            append(head,temp, buf);
                             next_dir(temp, head, spec);
-                            free(temp);
                         }
                     }
                     else
                     {
-
-                        if ((strcmp(de->d_name, "..") && strcmp(de->d_name, ".") && checkPos(de->d_name, '.') != 0) || (strchr(de->d_name, '.') == NULL))
+                        if ((strchr(de->d_name, '.') == 0 && strlen(de->d_name) > 1 && !(strcmp(de->d_name, ".."))) || (strchr(de->d_name, '.') == NULL))
                         {            
                             temp = concat(name, de->d_name);
-                            append(&head,temp, buf);
+                            append(head,temp, buf);
                             next_dir(temp, head, spec);
-                            free(temp);
                         }
                     }                                 
                 }
@@ -518,7 +461,7 @@ int main(int argc, char **argv)
                         memcpy(&(head->buf), &buf, sizeof(buf));
                     }
                     else
-                        append(&head, argv[args], buf);
+                        append(head, argv[args], buf);
                     next_dir(argv[args], head, spec);
                 }
             }
@@ -536,11 +479,10 @@ int main(int argc, char **argv)
             if (spec->flags & T_BIT && spec->flags & LOWER_R_BIT)
                 sort_list(head, s_byTimeR);
             else
-                sort_list(head, s_byTime);
+                sort_list(head, s_byTimeR);
         }
         else
         {
-            printf("Sorten the list\n");
             if (spec->flags & LOWER_R)
                 sort_list(head, s_byNameR);
             else
@@ -548,7 +490,6 @@ int main(int argc, char **argv)
         }
         printList(head, spec);
         free(spec);
-        delList(head);
-
+        free(head);
     return 0; 
 } 

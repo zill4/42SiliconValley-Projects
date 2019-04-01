@@ -1,4 +1,4 @@
-#include "../includes/ft_ls.h"
+    #include "../includes/ft_ls.h"
 void    printListR(t_dlist *head, t_spec *spec)
 {
     if (!head)
@@ -22,7 +22,15 @@ void    printList(t_dlist *head, t_spec *spec)
     loadSubs(head, spec);
     print_dir(head, spec);
 }
-
+void printDetails(t_dlist *head)
+{
+    mode_print(head->sub->buf.st_mode);
+    printf(" %hu ",head->sub->buf.st_nlink);
+    printf("%-5s ",getpwuid(head->sub->buf.st_uid)->pw_name);
+    printf("%s ",getgrgid(head->sub->buf.st_gid)->gr_name);
+    printf("%6lld ",head->sub->buf.st_size);
+    printf("%.12s ",4+(ctime (&head->sub->buf.st_mtime)));
+}
 void  print_file(char *name, t_spec *spec)
 {
     struct stat buf;
@@ -39,46 +47,39 @@ void  print_file(char *name, t_spec *spec)
     printf("%s\n",name);
 }
 
+void memclear(t_dlist *head, t_dlist *tmp)
+{
+    tmp = head->sub->next;
+    ft_strdel(&head->sub->name);
+    ft_memdel((void **)&head->sub);
+    free(head->sub);
+    head->sub = tmp;
+}
+
 void  print_dir(t_dlist *head, t_spec *spec)
 {
     t_dlist *tmp;
-            if (head->sub == NULL || head->blocks == -1)
+
+    tmp = NULL;
+            if ((head->sub == NULL || head->blocks == 0) & (!(spec->flags & F_BIT)))
                 return ;
             if (strcmp(head->name, "."))
                 printf("%s\n", head->name);
             if (spec->flags & L_BIT && !(spec->flags & F_BIT))
                 printf("Total %d\n",head->blocks);
-            if (head->sub != NULL)
+            while(head->sub->next)
             {
-                while(head->sub->next)
-                {
-                    if (spec->flags & L_BIT)
-                    {
-                        mode_print(head->sub->buf.st_mode);
-                        printf(" %hu ",head->sub->buf.st_nlink);
-                        printf("%-5s ",getpwuid(head->sub->buf.st_uid)->pw_name);
-                        printf("%s ",getgrgid(head->sub->buf.st_gid)->gr_name);
-                        printf("%6lld ",head->sub->buf.st_size);
-                        printf("%.12s ",4+(ctime (&head->sub->buf.st_mtime)));
-                    }
-                    printf("%s\n",head->sub->name);
-                    tmp = head->sub->next;
-                    ft_strdel(&head->sub->name);
-                    ft_memdel((void **)&head->sub);
-                    free(head->sub);
-                    head->sub = tmp;
-                }
                 if (spec->flags & L_BIT)
-                {
-                    mode_print(head->sub->buf.st_mode);
-                    printf(" %hu ",head->sub->buf.st_nlink);
-                    printf("%-5s ",getpwuid(head->sub->buf.st_uid)->pw_name);
-                    printf("%s ",getgrgid(head->sub->buf.st_gid)->gr_name);
-                    printf("%6lld ",head->sub->buf.st_size);
-                    printf("%.12s ",4+(ctime (&head->sub->buf.st_mtime)));
-                }
-                printf("%s\n ",head->sub->name);
-                delList(head->sub);
+                    printDetails(head);
+                printf("%s\n",head->sub->name);
+                memclear(head, tmp);
             }
+            if (spec->flags & L_BIT)
+                printDetails(head);
+            printf("%s\n ",head->sub->name);
+        if (!(spec->flags & F_BIT))
+            ft_strdel(&head->sub->name);
+        ft_memdel((void **)&head->sub);
+        free(head->sub);
         printf("\n"); 
 }

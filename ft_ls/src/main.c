@@ -12,7 +12,16 @@
 
 #include "../includes/ft_ls.h"
 
-
+void isFile(t_dlist *head, struct stat buf, char *name)
+{
+    if (head->name == NULL)
+    {
+        ft_memcpy(&(head->buf), &buf, sizeof(buf));
+        append(&head->sub, name, buf);
+    }
+    else
+        append(&head->sub, name, buf);
+}
 
 int main(int argc, char **argv) 
 { 
@@ -24,11 +33,13 @@ int main(int argc, char **argv)
 
     args = 1;
     head = malloc(sizeof(t_dlist));
+    head->sub = newList();
     head->next = NULL;
     head->name = NULL;
     spec = malloc(sizeof(t_spec));
     spec->flags = 0;
-
+    tmp = head;
+    
     while (args < argc)
     {
         if (argv[args][0] == '-')
@@ -40,11 +51,11 @@ int main(int argc, char **argv)
             {
                 if (head->name == NULL)
                 {
-                    head->name = strdup(argv[args]);
-                    memcpy(&(head->buf), &buf, sizeof(buf));
+                    head->name = ft_strdup(argv[args]);
+                    ft_memcpy(&(head->buf), &buf, sizeof(buf));
                 }
                 else
-                    append(&head, argv[args], buf);
+                    appendD(&head, argv[args], buf);
                 next_dir(argv[args], head, spec);
             }
             else
@@ -54,19 +65,19 @@ int main(int argc, char **argv)
                     spec->flags |= F_BIT;
                     if (head->name == NULL)
                     {
-                        memcpy(&(head->buf), &buf, sizeof(buf));
-                        append(&head->sub, argv[args], buf);
+                        head->name = ft_strdup(".");
+                        ft_memcpy(&(head->sub->buf), &buf, sizeof(buf));
+                        head->sub->name = argv[args];
                     }
                     else
                         append(&head->sub, argv[args], buf);
                 }
                 else
                 {
-                    printf("%s no file or directory", argv[args]);
+                    printf("%s no file or directory\n", argv[args]);
                     return (-1);
                 }
             }
-            
         }
         if (spec->flags & ERROR)
         {
@@ -78,9 +89,9 @@ int main(int argc, char **argv)
     if (argc <= 2)
     {
         lstat(".", &buf);
-        head->name = strdup(".");
+        head->name = ft_strdup(".");
         head->next = NULL;
-        memcpy(&(head->buf), &buf, sizeof(buf));
+        ft_memcpy(&(head->buf), &buf, sizeof(buf));
         next_dir(head->name, head, spec);
     }
     if (!(spec->flags & F_BIT))
@@ -108,37 +119,13 @@ int main(int argc, char **argv)
         delList(head);
         return (0);
     }
-    print_dir(head, spec);
-    tmp = head;
-    head = head->next;
-    if (spec->flags & T_BIT)
+    if (ft_strcmp(head->name, ".") == 0)
     {
-        if (spec->flags & T_BIT && spec->flags & LOWER_R_BIT)
-        {
-            sort_list(head, s_byTimeR);
-            printList(head, spec);
-
-        }
-        else
-        {
-            sort_list(head, s_byTime);
-            printListR(head, spec);
-        }
+        print_dir(head, spec);
+        tmp = head;
+        head = head->next;
     }
-    else
-    {
-        if (spec->flags & LOWER_R_BIT)
-        {
-            sort_list(head, s_byName);
-            printListR(head, spec);
-
-        }
-        else
-        {
-            sort_list(head, s_byNameR);
-            printListR(head, spec);
-        }
-    }
+    ft_sortPrint(head, spec);
     free(spec);
     delList(tmp);
     return 0; 

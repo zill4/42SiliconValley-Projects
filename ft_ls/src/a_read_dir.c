@@ -21,10 +21,10 @@ void  next_dir(char *name, t_dlist *head, t_spec *spec)
                 {
                     if (spec->flags & A_BIT)
                     {
-                        if ((strchr(de->d_name, '.') == 0 && strlen(de->d_name) > 1 && !(strcmp(de->d_name, ".."))) || (strchr(de->d_name, '.') == NULL) || (strchr(de->d_name, '.') != NULL && strcmp(de->d_name, "..") && strcmp(de->d_name, ".")))
+                        if ((ft_strchr(de->d_name, '.') == 0 && ft_strlen(de->d_name) > 1 && !(ft_strcmp(de->d_name, ".."))) || (ft_strchr(de->d_name, '.') == NULL) || (ft_strchr(de->d_name, '.') != NULL && ft_strcmp(de->d_name, "..") && ft_strcmp(de->d_name, ".")))
                         {            
                             temp = concat(name, de->d_name);
-                            append(&head,temp, buf);
+                            appendD(&head,temp, buf);
                             next_dir(temp, head, spec);
                             free(temp);
                         }
@@ -32,10 +32,10 @@ void  next_dir(char *name, t_dlist *head, t_spec *spec)
                     else
                     {
 
-                        if ((strcmp(de->d_name, "..") && strcmp(de->d_name, ".") && checkPos(de->d_name, '.') != 0) || (strchr(de->d_name, '.') == NULL))
+                        if ((ft_strcmp(de->d_name, "..") && ft_strcmp(de->d_name, ".") && checkPos(de->d_name, '.') != 0) || (ft_strchr(de->d_name, '.') == NULL))
                         {            
                             temp = concat(name, de->d_name);
-                            append(&head,temp, buf);
+                            appendD(&head,temp, buf);
                             next_dir(temp, head, spec);
                             free(temp);
                         }

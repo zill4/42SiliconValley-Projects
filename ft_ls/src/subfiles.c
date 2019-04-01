@@ -1,58 +1,21 @@
 
 #include "../includes/ft_ls.h"
 
-void loadSubs(t_dlist *head, t_spec *spec)
+int    ft_list_loader(t_dlist *head, struct dirent *de, struct stat buf)
 {
-    DIR *dr = opendir(head->name);
-    struct stat buf;
-    struct dirent *de;
-    int count = -1;
-    char *name = head->name;
-    char *temp;
-    head->sub = malloc(sizeof(t_dlist));
-    head->sub->next = NULL;
-    head->blocks = 0;
-    if (dr != NULL)
-    {
-        while ((de = readdir(dr)) != NULL)
-        {   
-            temp = concat(name, de->d_name);
-            lstat(temp, &buf);  
-            if (spec->flags & A_BIT)
-            {
-                    if (count == -1) 
-                    {			
-                        head->sub->name = strdup(de->d_name);
-                        memcpy(&(head->sub->buf),&buf,sizeof(buf));
-                        count += 1;
-                    }
-                    else
-                        append(&head->sub, de->d_name, buf);
-                    count += buf.st_blocks;
-            }
-            else
-            {
-                if ((strcmp(de->d_name, "..") && strcmp(de->d_name, ".") && checkPos(de->d_name, '.') != 0) || (strchr(de->d_name, '.') == NULL))
-                {
-                    if (count == -1) 
-                    {			
-                        head->sub->name = strdup(de->d_name);
-                        memcpy(&(head->sub->buf),&buf,sizeof(buf));
-                        count += 1;
-                    }
-                    else
-                        append(&head->sub, de->d_name, buf);
-                    count += buf.st_blocks;
-                }
-            }
-            free(temp);
-        }
-        head->blocks = count;
-        if (head->sub->name == NULL)
-        {
-            closedir(dr);
-            return ;
-        }
+    if (head->blocks == 0) 
+    {			
+        head->sub->name = ft_strdup(de->d_name);
+        ft_memcpy(&(head->sub->buf),&buf,sizeof(buf));
+    }
+    else
+        append(&head->sub, de->d_name, buf);
+    head->blocks += buf.st_blocks;
+    return (buf.st_blocks);
+}
+
+void    ft_sorter(t_dlist *head, t_spec *spec)
+{
         if (spec->flags & T_BIT)
         {
             if (spec->flags & LOWER_R_BIT)
@@ -67,6 +30,46 @@ void loadSubs(t_dlist *head, t_spec *spec)
             else
                 sort_list(head->sub, s_byName);
         }
+}
+
+void    ft_sortPrint(t_dlist *head, t_spec *spec)
+{
+    if (spec->flags & T_BIT)
+        if (spec->flags & T_BIT && spec->flags & LOWER_R_BIT)
+            sort_list(head, s_byTimeR);
+        else
+            sort_list(head, s_byTime);
+    else
+        if (spec->flags & LOWER_R_BIT)
+            sort_list(head, s_byName);
+        else
+            sort_list(head, s_byNameR);
+    printListR(head, spec);
+}
+
+void loadSubs(t_dlist *head, t_spec *spec)
+{
+    DIR *dr;
+    struct stat buf;
+    struct dirent *de;
+    char *temp;
+
+    if ((dr = opendir(head->name)) != NULL)
+    {
+        while ((de = readdir(dr)) != NULL)
+        {   
+            temp = concat(head->name, de->d_name);
+            lstat(temp, &buf);  
+            if (spec->flags & A_BIT)
+                ft_list_loader(head,de,buf);
+            else
+                if ((ft_strcmp(de->d_name, "..") && ft_strcmp(de->d_name, ".") && \
+                checkPos(de->d_name, '.') != 0) || (ft_strchr(de->d_name, '.') == NULL))
+                    ft_list_loader(head,de,buf);
+            free(temp);
+        }
+        if (head->sub->name != NULL)
+            ft_sorter(head, spec);
         closedir(dr);
     }
 }

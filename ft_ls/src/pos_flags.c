@@ -13,11 +13,11 @@ int   checkPos(char* str, char c)
 char* concat(const char *s1, const char *s2)
 {
     char *temp = malloc(strlen(s1) + 2);
-    strcpy(temp, s1);
-    strcat(temp, "/");
-    char *result = malloc(strlen(temp) + strlen(s2) + 1);
-    strcpy(result, temp);
-    strcat(result, s2);
+    ft_strcpy(temp, s1);
+    ft_strcat(temp, "/");
+    char *result = malloc(ft_strlen(temp) + ft_strlen(s2) + 1);
+    ft_strcpy(result, temp);
+    ft_strcat(result, s2);
     free(temp);
     return result;
 }

@@ -36,7 +36,7 @@ int     s_byTimeR(t_dlist *tmp1, t_dlist *tmp2)
 
 int s_byName(t_dlist *tmp1, t_dlist *tmp2)
 {
-    int diff_m = strcmp(tmp1->name, tmp2->name);
+    int diff_m = ft_strcmp(tmp1->name, tmp2->name);
     if (diff_m <= 0)
         return (1);
     else
@@ -45,7 +45,7 @@ int s_byName(t_dlist *tmp1, t_dlist *tmp2)
 
 int s_byNameR(t_dlist *tmp1, t_dlist *tmp2)
 {
-    int diff_m = strcmp(tmp1->name, tmp2->name);
+    int diff_m = ft_strcmp(tmp1->name, tmp2->name);
     if (diff_m > 0)
         return (1);
     else

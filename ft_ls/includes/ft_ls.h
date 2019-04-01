@@ -1,5 +1,6 @@
 #ifndef FT_LS_H
 # define FT_LS_H
+# include "../libft/libft.h"
 # include <stdio.h>
 # include <stdlib.h>
 # include <dirent.h>
@@ -64,5 +65,9 @@ void    printList(t_dlist *head, t_spec *spec);
 void    printListR(t_dlist *head, t_spec *spec);
 void  next_dir(char *name, t_dlist *head, t_spec *spec);
 void set_flags(char *str, t_spec *spec);
+void    ft_sorter(t_dlist *head, t_spec *spec);
+t_dlist     *newList();
+void    appendD(t_dlist **head, char *name, struct stat buf);
+void    ft_sortPrint(t_dlist *head, t_spec *spec);
 
 #endif

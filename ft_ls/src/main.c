@@ -480,6 +480,7 @@ void set_flags(char *str, t_spec *spec)
 int main(int argc, char **argv) 
 { 
     t_dlist *head;
+    t_dlist *tmp;
     int args;
  	struct stat buf;
     t_spec *spec;
@@ -516,7 +517,7 @@ int main(int argc, char **argv)
                     spec->flags |= F_BIT;
                     if (head->name == NULL)
                     {
-                        head->name = strdup(".");
+                        //head->name = strdup(".");
                         memcpy(&(head->buf), &buf, sizeof(buf));
                         append(&head->sub, argv[args], buf);
                     }
@@ -566,11 +567,13 @@ int main(int argc, char **argv)
         }
         print_dir(head, spec);
         free(spec);
+        ft_strdel(&head->name);
+        ft_memdel((void **)&head);
         delList(head);
-        while(1);
         return (0);
     }
     print_dir(head, spec);
+    tmp = head;
     head = head->next;
     if (spec->flags & T_BIT)
     {
@@ -600,7 +603,8 @@ int main(int argc, char **argv)
             printListR(head, spec);
         }
     }
-        free(spec);
-        delList(head);
+    free(spec);
+    free(tmp);
+    delList(tmp);
     return 0; 
 } 

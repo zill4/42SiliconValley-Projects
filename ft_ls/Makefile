@@ -1,7 +1,8 @@
 NAME = ft_ls
 
 #	src / obj files
-SRC	= main.c
+SRC	=  main.c a_read_dir.c b_sorting.c  c_list.c  ./d_printing.c  pos_flags.c \
+		subfiles.c 
 OBJ	= $(addprefix $(OBJDIR), $(SRC:.c=.o))
 
 #	compiler

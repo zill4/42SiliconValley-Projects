@@ -40,4 +40,29 @@ typedef struct s_dlist
 # define T_BIT          (FT_BIT(4))
 # define ERROR          (FT_BIT(5))
 # define F_BIT          (FT_BIT(6))
+
+t_dlist *sort_list(t_dlist *lst, int (*cmp)(t_dlist *, t_dlist *));
+void swap_info(t_dlist *one, t_dlist *second);
+int s_byNameR(t_dlist *tmp1, t_dlist *tmp2);
+int s_byName(t_dlist *tmp1, t_dlist *tmp2);
+int     s_byTimeR(t_dlist *tmp1, t_dlist *tmp2);
+int     s_byTime(t_dlist *tmp1, t_dlist *tmp2);
+t_dlist     *newNode(char *name, struct stat buf);
+void	ft_memdel(void **ap);
+void				ft_strdel(char **as);
+void				ft_bufdel(struct stat **as);
+void    delList(t_dlist *list);
+void	lstdel(t_dlist **list);
+void    append(t_dlist **head, char *name, struct stat buf);
+void	mode_print(int  mode);
+char* concat(const char *s1, const char *s2);
+int   checkPos(char* str, char c);
+void  print_file(char *name, t_spec *spec);
+void  print_dir(t_dlist *head, t_spec *spec);
+void loadSubs(t_dlist *head, t_spec *spec);
+void    printList(t_dlist *head, t_spec *spec);
+void    printListR(t_dlist *head, t_spec *spec);
+void  next_dir(char *name, t_dlist *head, t_spec *spec);
+void set_flags(char *str, t_spec *spec);
+
 #endif

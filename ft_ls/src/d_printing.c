@@ -63,7 +63,7 @@ void  print_dir(t_dlist *head, t_spec *spec)
     tmp = NULL;
             if ((head->sub == NULL || head->blocks == 0) & (!(spec->flags & F_BIT)))
                 return ;
-            if (strcmp(head->name, "."))
+            if (strcmp(head->name, ".") && (head->next))
                 printf("%s\n", head->name);
             if (spec->flags & L_BIT && !(spec->flags & F_BIT))
                 printf("Total %d\n",head->blocks);

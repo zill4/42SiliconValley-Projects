@@ -41,11 +41,15 @@ typedef struct s_dlist
 # define A              (2)
 # define LOWER_R        (3)
 # define T              (4)
+# define E              (5)
+# define F              (6)
 # define L_BIT          (FT_BIT(0))
 # define UPPER_R_BIT    (FT_BIT(1))
 # define A_BIT          (FT_BIT(2))
 # define LOWER_R_BIT    (FT_BIT(3))
 # define T_BIT          (FT_BIT(4))
+# define ERROR          (FT_BIT(5))
+# define F_BIT          (FT_BIT(6))
 
 t_dlist     *newNode(char *name, struct stat buf)
 {
@@ -127,6 +131,14 @@ void    printIT(t_dlist *head)
      printf("%s\n", head->name);
 }
 
+int   checkPos(char* str, char c)
+{
+    char *tmp;
+    int pos;
+    tmp = strchr(str,c);
+    pos = (int)(tmp - str);
+    return (pos);
+}
 
 int     s_byTime(t_dlist *tmp1, t_dlist *tmp2)
 {
@@ -266,14 +278,29 @@ void	mode_print(int  mode)
 		c = '-';
 	printf("%c%s", c, temp);
 }
+void  print_file(char *name, t_spec *spec)
+{
+    struct stat buf;
+    lstat(name, &buf);
+    if (spec->flags & L_BIT)
+    {
+        mode_print(buf.st_mode);
+        printf(" %hu ",buf.st_nlink);
+        printf("%-5s ",getpwuid(buf.st_uid)->pw_name);
+        printf("%s ",getgrgid(buf.st_gid)->gr_name);
+        printf("%6lld ",buf.st_size);
+        printf("%.12s ",4+(ctime (&buf.st_mtime)));
+    }
+    printf("%s\n",name);
+}
 void  print_dir(t_dlist *head, t_spec *spec)
 {
     t_dlist *tmp;
+            if (head->sub == NULL || head->blocks == -1)
+                return ;
             if (strcmp(head->name, "."))
                 printf("%s\n", head->name);
-            if (head->sub == NULL)
-                return ;
-            if (spec->flags & L_BIT)
+            if (spec->flags & L_BIT && !(spec->flags & F_BIT))
                 printf("Total %d\n",head->blocks);
             if (head->sub != NULL)
             {
@@ -294,9 +321,6 @@ void  print_dir(t_dlist *head, t_spec *spec)
                     ft_memdel((void **)&head->sub);
                     free(head->sub);
                     head->sub = tmp;
-                    //free(head->sub->name);
-                    //free(head->sub);
-                    //head->sub = head->sub->next;
                 }
                 if (spec->flags & L_BIT)
                 {
@@ -321,7 +345,7 @@ void loadSubs(t_dlist *head, t_spec *spec)
     DIR *dr = opendir(head->name);
     struct stat buf;
     struct dirent *de;
-    int count = 0;
+    int count = -1;
     // char *name = strdup(head->name);
     char *name = head->name;
     char *temp;
@@ -337,10 +361,11 @@ void loadSubs(t_dlist *head, t_spec *spec)
             lstat(temp, &buf);  
             if (spec->flags & A_BIT)
             {
-                    if (count == 0) 
+                    if (count == -1) 
                     {			
                         head->sub->name = strdup(de->d_name);
                         memcpy(&(head->sub->buf),&buf,sizeof(buf));
+                        count += 1;
                     }
                     else
                         append(&head->sub, de->d_name, buf);
@@ -348,12 +373,13 @@ void loadSubs(t_dlist *head, t_spec *spec)
             }
             else
             {
-                if ((de->d_name[0] !=  '.'))
+                if ((strcmp(de->d_name, "..") && strcmp(de->d_name, ".") && checkPos(de->d_name, '.') != 0) || (strchr(de->d_name, '.') == NULL))
                 {
-                    if (count == 0) 
+                    if (count == -1) 
                     {			
                         head->sub->name = strdup(de->d_name);
                         memcpy(&(head->sub->buf),&buf,sizeof(buf));
+                        count += 1;
                     }
                     else
                         append(&head->sub, de->d_name, buf);
@@ -386,31 +412,30 @@ void loadSubs(t_dlist *head, t_spec *spec)
     }
 }
 
-void    printList(t_dlist *head, t_spec *spec)
+void    printListR(t_dlist *head, t_spec *spec)
 {
-
-    // while (head->next)
-    // {
-    //     loadSubs(head, spec);
-    //     print_dir(head, spec);
-    //     head = head->next;
-    // }
-    // loadSubs(head, spec);
-    // print_dir(head, spec);
+    if (!head)
+        return ;
     if (head->next)
-        printList(head->next, spec);
+        printListR(head->next, spec);
     loadSubs(head, spec);
     print_dir(head, spec);
 }
 
-int   checkPos(char* str, char c)
+void    printList(t_dlist *head, t_spec *spec)
 {
-    char *tmp;
-    int pos;
-    tmp = strchr(str,c);
-    pos = (int)(tmp - str);
-    return (pos);
+    if (!head)
+        return ;
+    while (head->next)
+    {
+        loadSubs(head, spec);
+        print_dir(head, spec);
+        head = head->next;
+    }
+    loadSubs(head, spec);
+    print_dir(head, spec);
 }
+
 void  next_dir(char *name, t_dlist *head, t_spec *spec)
 {
     DIR *dr = opendir(name);
@@ -462,25 +487,31 @@ void set_flags(char *str, t_spec *spec)
     int i = 0;
     if (!str){
         printf("ERROR Bad String!\n");
+        spec->flags |= ERROR;
         return ;
     }
     if (str[0] != '-')
     {
         printf("ERROR Bad Flag format\n");
+        spec->flags |= ERROR;
         return ;
     }
+    i++;
     while (str[i])
     {
         if (str[i] == 'l')
             spec->flags |= L_BIT;
-        if (str[i] == 'a')
+        else if (str[i] == 'a')
             spec->flags |= A_BIT;
-        if (str[i] == 'r')
+        else if (str[i] == 'r')
             spec->flags |= LOWER_R_BIT;
-        if (str[i] == 'R')
+        else if (str[i] == 'R')
             spec->flags |= UPPER_R_BIT;
-        if (str[i] == 't')
+        else if (str[i] == 't')
             spec->flags |= T_BIT;
+        else
+            spec->flags |= ERROR;
+        
         i++;
     }
 }
@@ -521,6 +552,32 @@ int main(int argc, char **argv)
                         append(&head, argv[args], buf);
                     next_dir(argv[args], head, spec);
                 }
+                else
+                {
+                    if (S_ISREG(buf.st_mode))
+                    {
+                        spec->flags |= F_BIT;
+                        if (head->name == NULL)
+                        {
+                            head->name = strdup(".");
+                            memcpy(&(head->buf), &buf, sizeof(buf));
+                            append(&head->sub, argv[args], buf);
+                        }
+                        else
+                            append(&head->sub, argv[args], buf);
+                    }
+                    else
+                    {
+                        printf("%s no file or directory", argv[args]);
+                        return (-1);
+                    }
+                }
+                
+            }
+            if (spec->flags & ERROR)
+            {
+                printf("ft_ls: illegal option -- %s\nusage: ls [-ABCFGHLOPRSTUWabcdefghiklmnopqrstuwx1] [file ...]\n", argv[args]);
+                return (-1);
             }
             args++;
         }
@@ -528,27 +585,73 @@ int main(int argc, char **argv)
         {
             lstat(".", &buf);
             head->name = strdup(".");
+            head->next = NULL;
             memcpy(&(head->buf), &buf, sizeof(buf));
             next_dir(head->name, head, spec);
         }
+        if (!(spec->flags & F_BIT))
+            loadSubs(head, spec);
+        else
+        {
+            if (spec->flags & T_BIT)
+            {
+                if (spec->flags & T_BIT && spec->flags & LOWER_R_BIT)
+                {
+                    sort_list(head->sub, s_byTimeR);
+                }
+                else
+                {
+                    sort_list(head->sub, s_byTime);
+
+                }
+            }
+            else
+            {
+                if (spec->flags & LOWER_R_BIT)
+                {
+                    sort_list(head->sub, s_byNameR);
+
+                }
+                else
+                {
+                    sort_list(head->sub, s_byName);
+                }
+            }
+            print_dir(head, spec);
+            return (0);
+        }
+        print_dir(head, spec);
+        head = head->next;
         if (spec->flags & T_BIT)
         {
             if (spec->flags & T_BIT && spec->flags & LOWER_R_BIT)
+            {
                 sort_list(head, s_byTimeR);
+                printList(head, spec);
+
+            }
             else
+            {
                 sort_list(head, s_byTime);
+                printListR(head, spec);
+
+            }
         }
         else
         {
-            printf("Sorten the list\n");
-            if (spec->flags & LOWER_R)
-                sort_list(head, s_byNameR);
-            else
+            if (spec->flags & LOWER_R_BIT)
+            {
                 sort_list(head, s_byName);
+                printListR(head, spec);
+
+            }
+            else
+            {
+                sort_list(head, s_byNameR);
+                printListR(head, spec);
+            }
         }
-        printList(head, spec);
         free(spec);
         delList(head);
-
     return 0; 
 } 

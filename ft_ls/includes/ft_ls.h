@@ -13,6 +13,7 @@
 typedef struct s_spec
 {
     int     flags;
+    int     dirs;
 }              t_spec;
 
 typedef struct s_dlist

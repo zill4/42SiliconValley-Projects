@@ -45,6 +45,7 @@ void  print_file(char *name, t_spec *spec)
         printf("%.12s ",4+(ctime (&buf.st_mtime)));
     }
     printf("%s\n",name);
+    printf("\n"); 
 }
 
 void memclear(t_dlist *head, t_dlist *tmp)
@@ -63,8 +64,13 @@ void  print_dir(t_dlist *head, t_spec *spec)
     tmp = NULL;
         if ((head->sub == NULL || head->blocks == -1) & (!(spec->flags & F_BIT)))
             return ;
-        if (strcmp(head->name, ".") && (head->next))
-            printf("%s\n", head->name);
+        if (head->sub == NULL && spec->flags & F_BIT)
+        {
+            print_file(head->name, spec);
+            return ;
+        }
+        if ((strcmp(head->name, ".") && (head->next)) || (spec->dirs > 1))
+             printf("%s:\n", head->name);
         if (spec->flags & L_BIT && !(spec->flags & F_BIT))
             printf("Total %d\n",head->blocks);
         if(head->sub->name == NULL)
@@ -74,7 +80,12 @@ void  print_dir(t_dlist *head, t_spec *spec)
             if (spec->flags & L_BIT)
                 printDetails(head);
             printf("%s\n",head->sub->name);
-            memclear(head, tmp);
+            tmp = head->sub->next;
+            //ft_strdel(&head->sub->name);
+            ft_memdel((void **)&head->sub);
+            free(head->sub);
+            head->sub = tmp;
+            //memclear(head, tmp);
         }
         if (spec->flags & L_BIT)
             printDetails(head);

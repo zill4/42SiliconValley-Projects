@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/ft_ls",
-            "args": ["-laRt", "author"],
+            "args": ["-l", "author", "Makefile", "ft_ls"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

@@ -4,6 +4,8 @@ int   checkPos(char* str, char c)
 {
     char *tmp;
     int pos;
+    
+    pos = -1;
     tmp = strchr(str,c);
     pos = (int)(tmp - str);
     return (pos);

@@ -22,7 +22,81 @@ void isFile(t_dlist *head, struct stat buf, char *name)
     else
         append(&head->sub, name, buf);
 }
+char *takeDir(char *name)
+{
+    char *result;
+    int i;
+    int len;
 
+    if (!name)
+        return (NULL);
+    i = 0;
+    len = ft_strlen(name);
+    result = malloc(len);
+    while(len--)
+    {
+        if (name[len] == '/')
+            break;
+    }
+    while(i != len)
+    {
+        result[i] = name[i];
+        i++;
+    }
+    result[i] = '\0';
+    return (result);
+}
+
+char *takeName(char *name)
+{
+    char *result;
+    int i;
+    int len;
+
+    if (!name)
+        return (NULL);
+    i = 0;
+    len = ft_strlen(name);
+    result = malloc(len);
+    while(len--)
+    {
+        if (name[len] == '/')
+            break;
+    }
+    ++len;
+    while(name[len])
+    {
+        result[i] = name[len++];
+        i++;
+    }
+    result[i] = '\0';
+    return (result);
+}
+int isInDir(char *name)
+{
+    DIR *dr;
+    struct dirent *de;
+    char *namer;
+    char *temp;
+
+    temp = name;
+    if (checkPos(name, '/') < 0)
+        temp = concat(".", name);
+    else
+        name = takeName(name);
+    
+    namer = takeDir(temp);
+    if ((dr = opendir(namer)))
+    {
+        while ((de = readdir(dr)) != NULL)
+        {
+            if (ft_strcmp(de->d_name, name) == 0)
+                return (1);
+        }
+    }
+    
+    return (0);
+}
 int main(int argc, char **argv) 
 { 
     t_dlist *head;
@@ -39,7 +113,7 @@ int main(int argc, char **argv)
     spec = malloc(sizeof(t_spec));
     spec->flags = 0;
     tmp = head;
-    
+
     while (args < argc)
     {
         if (argv[args][0] == '-')
@@ -60,7 +134,7 @@ int main(int argc, char **argv)
             }
             else
             {
-                if (S_ISREG(buf.st_mode))
+                if (S_ISREG(buf.st_mode) && isInDir(argv[args]))
                 {
                     spec->flags |= F_BIT;
                     if (head->name == NULL)
@@ -86,7 +160,7 @@ int main(int argc, char **argv)
         }
         args++;
     }
-    if (argc <= 2)
+    if (argc == 1 || head->name == NULL)
     {
         lstat(".", &buf);
         head->name = ft_strdup(".");
@@ -94,9 +168,7 @@ int main(int argc, char **argv)
         ft_memcpy(&(head->buf), &buf, sizeof(buf));
         next_dir(head->name, head, spec);
     }
-    if (!(spec->flags & F_BIT))
-        loadSubs(head, spec);
-    else
+    if ((spec->flags & F_BIT))
     {
         if (spec->flags & T_BIT)
         {
@@ -113,20 +185,29 @@ int main(int argc, char **argv)
                 sort_list(head->sub, s_byName);
         }
         print_dir(head, spec);
-        free(spec);
+        tmp = head->next;
+        delList(head->sub);
         ft_strdel(&head->name);
         ft_memdel((void **)&head);
-        delList(head);
-        return (0);
+        free(head);
+        head = tmp;
+        if (!head)
+        {
+            free(spec);
+            delList(tmp);
+            return (0);
+        }
     }
     if (ft_strcmp(head->name, ".") == 0)
     {
+        loadSubs(head, spec);
         print_dir(head, spec);
         tmp = head;
         head = head->next;
     }
     ft_sortPrint(head, spec);
     free(spec);
+    delList(tmp->sub);
     delList(tmp);
     return 0; 
 } 

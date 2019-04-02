@@ -76,7 +76,6 @@ void set_flags(char *str, t_spec *spec)
             spec->flags |= T_BIT;
         else
             spec->flags |= ERROR;
-        
         i++;
     }
 }

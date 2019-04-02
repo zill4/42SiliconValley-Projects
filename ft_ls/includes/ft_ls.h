@@ -34,6 +34,7 @@ typedef struct s_dlist
 # define T              (4)
 # define E              (5)
 # define F              (6)
+# define D              (7)
 # define L_BIT          (FT_BIT(0))
 # define UPPER_R_BIT    (FT_BIT(1))
 # define A_BIT          (FT_BIT(2))
@@ -41,6 +42,7 @@ typedef struct s_dlist
 # define T_BIT          (FT_BIT(4))
 # define ERROR          (FT_BIT(5))
 # define F_BIT          (FT_BIT(6))
+# define D_BIT          (FT_BIT(7))
 
 t_dlist *sort_list(t_dlist *lst, int (*cmp)(t_dlist *, t_dlist *));
 void swap_info(t_dlist *one, t_dlist *second);

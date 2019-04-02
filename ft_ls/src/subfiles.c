@@ -3,10 +3,11 @@
 
 int    ft_list_loader(t_dlist *head, struct dirent *de, struct stat buf)
 {
-    if (head->blocks == 0) 
+    if (head->blocks == -1) 
     {			
         head->sub->name = ft_strdup(de->d_name);
         ft_memcpy(&(head->sub->buf),&buf,sizeof(buf));
+        head->blocks += 1;
     }
     else
         append(&head->sub, de->d_name, buf);

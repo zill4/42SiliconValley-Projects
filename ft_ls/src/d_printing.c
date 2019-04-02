@@ -61,25 +61,28 @@ void  print_dir(t_dlist *head, t_spec *spec)
     t_dlist *tmp;
 
     tmp = NULL;
-            if ((head->sub == NULL || head->blocks == 0) & (!(spec->flags & F_BIT)))
-                return ;
-            if (strcmp(head->name, ".") && (head->next))
-                printf("%s\n", head->name);
-            if (spec->flags & L_BIT && !(spec->flags & F_BIT))
-                printf("Total %d\n",head->blocks);
-            while(head->sub->next)
-            {
-                if (spec->flags & L_BIT)
-                    printDetails(head);
-                printf("%s\n",head->sub->name);
-                memclear(head, tmp);
-            }
+        if ((head->sub == NULL || head->blocks == -1) & (!(spec->flags & F_BIT)))
+            return ;
+        if (strcmp(head->name, ".") && (head->next))
+            printf("%s\n", head->name);
+        if (spec->flags & L_BIT && !(spec->flags & F_BIT))
+            printf("Total %d\n",head->blocks);
+        if(head->sub->name == NULL)
+            head->sub = head->sub->next;        
+        while(head->sub->next)
+        {
             if (spec->flags & L_BIT)
                 printDetails(head);
-            printf("%s\n ",head->sub->name);
+            printf("%s\n",head->sub->name);
+            memclear(head, tmp);
+        }
+        if (spec->flags & L_BIT)
+            printDetails(head);
+        printf("%s\n ",head->sub->name);
         if (!(spec->flags & F_BIT))
             ft_strdel(&head->sub->name);
         ft_memdel((void **)&head->sub);
+        delList(head->sub);
         free(head->sub);
         printf("\n"); 
 }

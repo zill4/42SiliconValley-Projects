@@ -71,7 +71,7 @@ void    append(t_dlist **head, char *name, struct stat buf)
     last = *head;
     new = malloc(sizeof(t_dlist));
     new->next = NULL;
-    new->blocks = 0;
+    new->blocks = -1;
     new->name = ft_strdup(name);
     new->sub = NULL;
     ft_memcpy(&(new->buf),&buf,sizeof(buf));
@@ -93,7 +93,7 @@ void    appendD(t_dlist **head, char *name, struct stat buf)
     last = *head;
     new = malloc(sizeof(t_dlist));
     new->next = NULL;
-    new->blocks = 0;
+    new->blocks = -1;
     new->name = ft_strdup(name);
     new->sub = newList();
     ft_memcpy(&(new->buf),&buf,sizeof(buf));

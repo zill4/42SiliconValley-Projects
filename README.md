@@ -13,11 +13,37 @@ I will upload my progress here first, before submitting to the local repository 
 ## Get_Next_Line
   Get_Next_Line is a c function that was written for the purpose reading from any given io stream, that is delimenated by 
   '\n' newline characters. Upon reaching a new line, the function keeps it position in static memory such that the consecutive    line can be read upon the next function call.
+
 ## Fillit
   Fillit is a type of tetris program written to recieve a set number of blocks in a 4x4 format up to 26 of them. 
   for example, is a block. Given this, and many more blocks, Fillit places all blocks in the smallest possible generated space.
 
-# Getting Started
+## Ft_LS
+-
+	
+## Ft_Printf
+-	
+
+## PHP_Piscine
+-	Day 0 - 9
+-	Rush 0 - 1
+## Hercules
+-	Week 0: Nemean Lion
+-	Week 1: Lernaean Hydra
+-	Week 2: Erymanthian Boar
+-	Week 3: Ceryneian Hind
+-	Week 4: Augean Stables
+
+## fdf
+-	Work in Progress..
+
+## fractol
+-	Coming soon...
+
+## filler
+-	Coming soon...
+
+## Getting Started
 
 If your interested in running any of these projects, a main is not currently included. 
 Libft will contain a make file which you can create buy simpley running ``` make all ```.

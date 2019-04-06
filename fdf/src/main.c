@@ -170,6 +170,7 @@ t_point     loadMap(int fd, t_strmap *head)
         ft_putchar('\n');
     }
     dimensions.x = x;
+    dimensions.y = i;
     return (dimensions);
 }
 /*
@@ -265,7 +266,7 @@ int main(int argc, char **argv)
     fd = open(argv[1], O_RDONLY);
         // Loading Map :: loadMap(File Descriptor, String Map container)
     test = loadMap(fd, head);
-    printf("TEST %d\n", test.x);
+    printf("Dimensions X:%d Y:%d\n", test.x, test.y);
         // The file can now be closed.
     close(fd);
     //map = parseMap(head);

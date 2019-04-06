@@ -23,6 +23,12 @@ typedef struct		s_list
 	struct s_list	*next;
 }					t_list;
 
+/*
+** Macro function to shift 'x', one (1) bit at the left.
+*/
+
+# define FT_BIT(x)	(1 << (x))
+
 int					get_next_line(const int fd, char **line);
 int					ft_stralloc(char **str, char **line, int fd, int val);
 int					ft_toupper(int c);

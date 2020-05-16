@@ -19,10 +19,19 @@ I will upload my progress here first, before submitting to the local repository 
   for example, is a block. Given this, and many more blocks, Fillit places all blocks in the smallest possible generated space.
 
 ## Ft_LS
--
+A remake from scratch of the unix ls command written in C.
+
+Steps to run
+clone repo in desired directory. git clone https://github.com/zill4/ft_ls.git
+
+Make sure to have gcc installed. Compile and build the code with make command
+
+Run the ft_ls program. ./ft_ls
+
+3.5) You can use the following flags ./ft_ls -ltar in any order, should preform close to the same as the ls command.
 	
 ## Ft_Printf
--	
+A remake of the printf function from scratch, used in the ft_ls for printing with formatting. 	
 
 ## PHP_Piscine
 -	Day 0 - 9

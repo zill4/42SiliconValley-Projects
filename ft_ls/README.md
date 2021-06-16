@@ -8,5 +8,5 @@ A remake from scratch of the unix ls command written in C.
 
 3) Run the ft_ls program. `./ft_ls`
 
-3.5) You can use the following flags `./ft_ls -ltar` in any order, should preform close to the same as the ls command.
+4) You can use the following flags `./ft_ls -ltar` in any order, should preform close to the same as the ls command.
 
